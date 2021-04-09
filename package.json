@@ -8,34 +8,98 @@
 	},
 	"categories": [
 		"Programming Languages",
-		"Notebooks",
+		"Visualization",
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:go-playground.play"
+		"onCommand:go-playground.play",
+		"onView:sandboxesView"
 	],
+	"keywords": [],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
 				"command": "go-playground.play",
 				"title": "Run Go Playground"
+			},
+			{
+				"command": "sandboxesView.refresh",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "sandboxesView.item.open",
+				"title": "Open On Playground",
+				"icon": {
+					"light": "resources/light/item_open.svg",
+					"dark": "resources/dark/item_open.svg"
+				}
+			},
+			{
+				"command": "sandboxesView.item.delete",
+				"title": "Delete sandbox",
+				"icon": {
+					"light": "resources/light/item_delete.svg",
+					"dark": "resources/dark/item_delete.svg"
+				}
 			}
 		],
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "live-workspace",
-					"title": "Live-Workspace",
-					"icon": "media/dep.svg"
+					"id": "go-playground",
+					"title": "Go Playground",
+					"icon": "resources/ext.svg"
 				}
 			]
 		},
 		"views": {
-			"live-workspace": [
+			"go-playground": [
 				{
-					"id": "exampleView",
-					"name": "Example View"
+					"id": "toysView",
+					"name": "Toys"
+				},
+				{
+					"id": "sandboxesView",
+					"name": "Sandboxes"
+				}
+			]
+		},
+		"menus": {
+			"commandPalette": [
+				{
+					"command": "sandboxesView.refresh"
+				}
+			],
+			"view/title": [
+				{
+					"command": "sandboxesView.refresh",
+					"when": "view == sandboxesView",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "sandboxesView.item.delete",
+					"when": "view == sandboxesView && viewItem == 'sandbox-item'",
+					"group": "inline"
+				},
+				{
+					"command": "sandboxesView.item.open",
+					"when": "view == sandboxesView && viewItem == 'sandbox-item'",
+					"group": "inline"
+				},
+				{
+					"command": "sandboxesView.item.delete",
+					"when": "view == sandboxesView && viewItem == 'sandbox-item'"
+				},
+				{
+					"command": "sandboxesView.item.open",
+					"when": "view == sandboxesView && viewItem == 'sandbox-item'"
 				}
 			]
 		}
