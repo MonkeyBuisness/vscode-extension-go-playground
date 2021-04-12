@@ -13,7 +13,8 @@
 	],
 	"activationEvents": [
 		"onCommand:go-playground.play",
-		"onView:sandboxesView"
+		"onView:sandboxesView",
+		"onView:toysView"
 	],
 	"keywords": [],
 	"main": "./out/extension.js",

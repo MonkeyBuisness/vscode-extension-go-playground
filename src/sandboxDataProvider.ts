@@ -30,13 +30,13 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
         let files = fs.readdirSync(this.sandboxDir, { withFileTypes: true });
         for (let file of files) {
             if (!file.isFile || !file.name.endsWith(sanboxFileExtension)) {
-                continue
+                continue;
             }
 
             nodes.push(new SandboxNode(file.name, path.join(this.sandboxDir, file.name)));
         }
 
-        return nodes
+        return nodes;
     }
 }
 
@@ -56,8 +56,8 @@ export class SandboxNode extends vscode.TreeItem {
 	}
 
 	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
+		light: path.join(__filename, '..', '..', 'resources', 'light', 'sandox.svg'),
+		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'sandox.svg')
 	};
 
 	contextValue = 'sandbox-item';
