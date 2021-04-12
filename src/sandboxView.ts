@@ -20,8 +20,11 @@ export class SandboxView {
 		vscode.commands.registerCommand(`${viewId}.refresh`, () => {
 			this._sandboxProvider.refresh();
 		});
-		vscode.commands.registerCommand(`${viewId}.newItem`, () => {
-			this.createNewSandbox();
+		vscode.commands.registerCommand(`${viewId}.newItem`, async () => {
+			let node = this.createNewSandbox();
+			if (node) {
+				vscode.commands.executeCommand('go-playground.play', node);
+			}
 		});
 		vscode.commands.registerCommand(`${viewId}.item.delete`, (item) => {
 			fs.unlink(item.filePath, (err) => {
@@ -38,28 +41,21 @@ export class SandboxView {
 		});
 	}
 
-	createNewSandbox() : void {
-		vscode.window.showInputBox({
+	async createNewSandbox() : Promise<SandboxNode | null> {
+		let filepath = await vscode.window.showInputBox({
 			prompt: 'Enter the new sandbox name'
 		})
 		.then(input => `${this.sandboxDir}${Path.sep}${input}${sanboxFileExtension}`)
-		.then(filepath => UniqueFileName.get(filepath, {}))
-		.then(filepath => {
-			let fData: SandoxFileData = {
-				version: sanboxFileVersion,
-				code: ''
-			};
-			fs.writeFileSync(filepath, JSON.stringify(fData));
+		.then(filepath => UniqueFileName.get(filepath, {}));
 
-			this._sandboxProvider.findNodeByFilePath(filepath).then(
-				(item) => {
-					if (item) {
-						vscode.commands.executeCommand('go-playground.play', item);
-					}
-				}
-			);
+		let fData: SandoxFileData = {
+			version: sanboxFileVersion,
+			code: ''
+		};
+		fs.writeFileSync(filepath, JSON.stringify(fData));
+	
+		this._sandboxProvider.refresh();
 
-			this._sandboxProvider.refresh();
-		});
+		return await this._sandboxProvider.findNodeByFilePath(filepath);
 	}
 }

@@ -1,16 +1,21 @@
 const { URLSearchParams } = require('url');
 import fetch, { RequestInit } from "node-fetch";
-import FormData = require('form-data');
-import { GoPlaygroundCompileResponse, GoPlaygroundFmtResponse } from './types';
+import {
+    PlaygroundCompileResponse,
+    PlaygroundFmtResponse,
+    Playground
+} from './types';
 
-export class GoPlaygroundService {
-    static async compile(baseURL: string, body?: string) : Promise<GoPlaygroundCompileResponse> {
-        let response = await fetch(`${baseURL}/compile`, GoPlaygroundService._pepareCompileBody(body));
+export class GoPlaygroundService implements Playground {
+    constructor(private _baseURL: string) {}
+
+    async compile(body?: string) : Promise<PlaygroundCompileResponse> {
+        let response = await fetch(`${this._baseURL}/compile`, GoPlaygroundService._pepareCompileBody(body));
         return (await response).json();
     }
 
-    static async format(baseURL: string, body?: string) : Promise<GoPlaygroundFmtResponse> {
-        let response = fetch(`${baseURL}/fmt`, GoPlaygroundService._pepareFmtBody(body));
+    async format(body?: string) : Promise<PlaygroundFmtResponse> {
+        let response = fetch(`${this._baseURL}/fmt`, GoPlaygroundService._pepareFmtBody(body));
         return (await response).json();
     }
 

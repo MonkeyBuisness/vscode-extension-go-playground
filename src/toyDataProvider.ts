@@ -11,8 +11,8 @@ export class ToyDataProvider implements vscode.TreeDataProvider<ToyNode> {
         this._onDidChangeTreeData.event;
 
     constructor(
-        private toysDir: string,
-        private _presetToys: ToyDefinition[]
+        private _presetToys: ToyDefinition[],
+        private toysDir?: string,
     ) {}
 
     refresh(): void {
@@ -36,17 +36,19 @@ export class ToyDataProvider implements vscode.TreeDataProvider<ToyNode> {
         }
 
         // load users toys.
-        let files = fs.readdirSync(this.toysDir, { withFileTypes: true });
-        for (let file of files) {
-            if (!file.isFile || !file.name.endsWith(toyFileExtension)) {
-                continue;
-            }
-            
-            let label: string = path.parse(file.name).name;
-            let fPath: string = path.join(this.toysDir, file.name);
-            let content: string = fs.readFileSync(fPath).toString();
+        if (this.toysDir) {
+            let files = fs.readdirSync(this.toysDir, { withFileTypes: true });
+            for (let file of files) {
+                if (!file.isFile || !file.name.endsWith(toyFileExtension)) {
+                    continue;
+                }
+                
+                let label: string = path.parse(file.name).name;
+                let fPath: string = path.join(this.toysDir, file.name);
+                let content: string = fs.readFileSync(fPath).toString();
 
-            nodes.push(new ToyNode(label, false, content, fPath));
+                nodes.push(new ToyNode(label, false, content, fPath));
+            }
         }
 
         return nodes;

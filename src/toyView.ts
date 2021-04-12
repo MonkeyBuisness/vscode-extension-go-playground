@@ -5,8 +5,8 @@ import { ToyDataProvider } from './toyDataProvider';
 
 export class ToyView {
 
-	constructor(context: vscode.ExtensionContext, viewId: string, toyDir: string) {
-		const toyProvider = new ToyDataProvider(toyDir, presetToyDefinitions);
+	constructor(context: vscode.ExtensionContext, viewId: string, toyDir?: string) {
+		const toyProvider = new ToyDataProvider(presetToyDefinitions, toyDir);
 		vscode.window.registerTreeDataProvider(viewId, toyProvider);
 		const toysView = vscode.window.createTreeView(viewId, {
 			treeDataProvider: toyProvider,
