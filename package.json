@@ -140,6 +140,8 @@
 		"vscode-test": "^1.5.0"
 	},
 	"dependencies": {
+		"@types/node-fetch": "^2.5.10",
+		"node-fetch": "^2.6.1",
 		"uniquefilename": "^1.1.2"
 	}
 }

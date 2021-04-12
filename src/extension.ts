@@ -15,6 +15,8 @@ const sandboxViewId: string = 'sandboxesView';
 const toysViewId: string = 'toysView';
 
 
+import { GoPlaygroundService } from './go-playground.service';
+
 export function activate(context: vscode.ExtensionContext) {
     // init views.
     // TODO: replace with path from settings.
@@ -23,6 +25,25 @@ export function activate(context: vscode.ExtensionContext) {
 
     // https://github.com/GorvGoyl/Shortcut-Menu-Bar-VSCode-Extension
     
+
+    GoPlaygroundService.compile('https://play.golang.org', `package main
+
+    import (
+        "fmt"
+    )
+    
+    func main() {
+        fmt.Println("Hello azaza")
+    }
+    `).then(
+        res => {
+            console.log(res);
+        }
+    ).catch(
+        err => {
+            console.log(err);
+        }
+    );
 
 
     const resolvePath = (filepath: string): string =>

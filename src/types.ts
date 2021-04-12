@@ -12,6 +12,26 @@ export interface ToyDefinition {
     template?: string;
 };
 
+export interface GoPlaygroundCompileResponse {
+    errors?: string;
+    events?: GoPlaygroundEvent[];
+    isTest?: boolean;
+    status?: number;
+    testsFailed?: number;
+    vetOK?: boolean;
+}
+
+export interface GoPlaygroundEvent {
+    delay?: number;
+    kind?: string;
+    message?: string;
+}
+
+export interface GoPlaygroundFmtResponse {
+    body?: string;
+    error?: string;
+}
+
 export const presetToyDefinitions: ToyDefinition[] = [
     {
         name: 'Hello, playground!',
