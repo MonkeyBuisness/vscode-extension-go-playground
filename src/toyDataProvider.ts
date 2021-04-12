@@ -2,9 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { ToyDefinition } from './types';
-
-const toyFileExtension: string = ".gotoy";
+import { ToyDefinition, toyFileExtension } from './types';
 
 export class ToyDataProvider implements vscode.TreeDataProvider<ToyNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<ToyNode | undefined | void> =
@@ -37,7 +35,6 @@ export class ToyDataProvider implements vscode.TreeDataProvider<ToyNode> {
             nodes.push(new ToyNode(toy.name, true, toy.template || ''));
         }
 
-
         // load users toys.
         let files = fs.readdirSync(this.toysDir, { withFileTypes: true });
         for (let file of files) {
@@ -69,7 +66,7 @@ export class ToyNode extends vscode.TreeItem {
 	) {
 		super(label, collapsibleState);
 
-		this.tooltip = this.filePath ? this.filePath : this.label;
+		this.tooltip = this.template;
         this.contextValue = this.isPresetable ? 'def-toy' : 'user-toy';
         let icon: string = this.isPresetable ? 'default_toy.svg' : 'user_toy.svg';
         this.iconPath = {

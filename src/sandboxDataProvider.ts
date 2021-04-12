@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-
-const sanboxFileExtension: string = ".sandbox";
+import { sanboxFileExtension } from './types';
 
 export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<SandboxNode | undefined | void> =
@@ -22,6 +21,17 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
 
     getChildren(element?: SandboxNode): vscode.ProviderResult<SandboxNode[]> {
         return Promise.resolve(this._loadSandboxFiles());
+    }
+
+    async findNodeByFilePath(fPath: string) : Promise<SandboxNode | null> {
+        let children: SandboxNode[] = await this.getChildren() || [];
+        for (let child of children) {
+            if (fPath === child.filePath) {
+                return child;
+            }
+        }
+
+        return null;
     }
 
     private _loadSandboxFiles() : SandboxNode[] {
