@@ -65,7 +65,7 @@ func main() {
 `
     },
     {
-        name: 'Tests',
+        name: 'Tests (Remote only)',
         template: `package main
 
 import (
@@ -107,7 +107,7 @@ func TestLastIndex(t *testing.T) {
 `
     },
     {
-        name: 'Multiple files',
+        name: 'Multiple files (Remote only)',
         template: `package main
 
 import (
@@ -190,7 +190,8 @@ import (
 func main() {
     for i := 0; i < 10; i++ {
         dur := time.Duration(rand.Intn(1000)) * time.Millisecond
-        fmt.Printf("Sleeping for %v\n", dur)
+        fmt.Print("Sleeping for ")
+        fmt.Println(dur)
         // Sleep for a random duration between 0-1000ms
         time.Sleep(dur)
     }
@@ -200,7 +201,7 @@ func main() {
 `
     },
     {
-        name: 'Clear',
+        name: 'Clear (Remote only)',
         template: `package main
 
 import (

@@ -173,12 +173,12 @@
 				},
 				{
 					"command": "toysView.playToy",
-					"when": "view == toysView && viewItem == 'toy'",
+					"when": "view == toysView && viewItem == 'toy' && go-playground.sandboxDirSpecified",
 					"group": "inline"
 				},
 				{
 					"command": "toysView.playToy",
-					"when": "view == toysView && viewItem == 'toy'"
+					"when": "view == toysView && viewItem == 'toy' && go-playground.sandboxDirSpecified"
 				}
 			]
 		}

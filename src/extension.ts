@@ -31,11 +31,18 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.commands.executeCommand('setContext', `${extName}.sandboxDirSpecified`, true);
             vscode.workspace.getConfiguration(extName).update('sandboxDir', sBoxesDir);
             cfg.sandboxView.resyncSanboxes(sBoxesDir);
+            cfg.toysView.refresh();
         }
     });
-    let playCmd = vscode.commands.registerCommand(`${extName}.play`, async (sandbox : SandboxNode | undefined | null) => {
+    let playCmd = vscode.commands.registerCommand(`${extName}.play`, async (sandbox : SandboxNode | string | undefined | null) => {
+        let initialContent = '';
+        if (typeof sandbox === 'string') {
+            initialContent = sandbox;
+            sandbox = undefined;
+        }
+        
         if (!sandbox) {
-            sandbox = await cfg.sandboxView.createNewSandbox();
+            sandbox = await cfg.sandboxView.createNewSandbox(initialContent);
             if (!sandbox) {
                 return;
             }
@@ -196,7 +203,7 @@ function initExtension(context: vscode.ExtensionContext) : ExtCfg {
 
 async function compileRemotely(cfg: ExtCfg, fPath: string) {
     cfg.runOutChan.show();
-    cfg.runOutChan.clear(); 
+    cfg.runOutChan.clear();
 
     let resp = await cfg.cloudPlayground?.compile(fPath);
     if (!resp) {
@@ -292,10 +299,6 @@ async function compileLocally(cfg: ExtCfg, fPath: string) {
     for (let e of resp.Events!) {
         if (e.Kind !== stdoutKind) {
             continue;
-        }
-        
-        if (e.Delay) {
-            await delay(e.Delay / 1000000);
         }
 
         if (!e.Message) {
