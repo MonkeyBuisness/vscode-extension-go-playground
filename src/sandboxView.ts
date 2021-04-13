@@ -9,7 +9,7 @@ export class SandboxView {
 	private _sandboxProvider: SandboxDataProvider;
 
 	constructor(context: vscode.ExtensionContext, viewId: string, private sandboxDir?: string) {
-		this._sandboxProvider = new SandboxDataProvider(sandboxDir);
+		this._sandboxProvider = new SandboxDataProvider(viewId, sandboxDir);
 		vscode.window.registerTreeDataProvider(viewId, this._sandboxProvider);
 		const sandboxView = vscode.window.createTreeView(viewId, {
 			treeDataProvider: this._sandboxProvider,

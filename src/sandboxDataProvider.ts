@@ -9,7 +9,10 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
     readonly onDidChangeTreeData: vscode.Event<SandboxNode | undefined | void> =
         this._onDidChangeTreeData.event;
 
-    constructor(private sandboxDir?: string) {}
+    constructor(
+        private viewId: string,
+        private sandboxDir?: string
+    ) {}
 
     refresh(): void {
         this._onDidChangeTreeData.fire();
@@ -25,7 +28,7 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
 
     getChildren(element?: SandboxNode): vscode.ProviderResult<SandboxNode[]> {
         if (!this.sandboxDir) {
-            return Promise.resolve([this._getFolderNotSpecifiedNode()]);
+            return Promise.resolve([this._getMissingFolderNode()]);
         }
 
         return Promise.resolve(this._loadSandboxFiles());
@@ -42,7 +45,7 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
         return null;
     }
 
-    private _getFolderNotSpecifiedNode() : SandboxNode {
+    private _getMissingFolderNode() : SandboxNode {
         return {
             collapsibleState: vscode.TreeItemCollapsibleState.None,
             contextValue: "sandbox-missing-item",
@@ -69,7 +72,13 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
                 continue;
             }
 
-            nodes.push(new SandboxNode(file.name, path.join(this.sandboxDir!, file.name)));
+            let node = new SandboxNode(file.name, path.join(this.sandboxDir!, file.name));
+            node.command = {
+                command: `${this.viewId}.item.open`,
+                title: 'Open On Playground',
+                arguments: [node],
+            };
+            nodes.push(node);
         }
 
         return nodes;
@@ -81,11 +90,9 @@ export class SandboxNode extends vscode.TreeItem {
 	constructor(
         public readonly fileName: string,
 		public readonly filePath: string,
-		public readonly collapsibleState: vscode.TreeItemCollapsibleState =
-            vscode.TreeItemCollapsibleState.None,
-        public readonly command?: vscode.Command
+        public command?: vscode.Command
 	) {
-		super(path.parse(fileName).name, collapsibleState);
+		super(path.parse(fileName).name, vscode.TreeItemCollapsibleState.None);
 
 		this.tooltip = this.filePath;
 		this.description = fs.statSync(filePath).ctime.toLocaleString();

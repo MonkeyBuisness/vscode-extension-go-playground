@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
     let playCmd = vscode.commands.registerCommand(`${extName}.play`, async (sandbox : SandboxNode | string | undefined | null) => {
-        let initialContent = '';
+        let initialContent: string | undefined = undefined;
         if (typeof sandbox === 'string') {
             initialContent = sandbox;
             sandbox = undefined;
