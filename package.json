@@ -13,6 +13,7 @@
 	],
 	"activationEvents": [
 		"onCommand:go-playground.play",
+		"onCommand:go-playground.changeSanboxDir",
 		"onView:sandboxesView",
 		"onView:toysView"
 	],
@@ -24,7 +25,7 @@
 			"properties": {
 				"go-playground.sandboxDir": {
 					"type": "string",
-					"description": "Specifies the path to the directory with sandox items"
+					"description": "Specifies the path to the directory with sandbox items. It is recommended to use a directory inside {GOPATH}"
 				},
 				"go-playground.cloudAPI": {
 					"type": "string",
@@ -37,6 +38,14 @@
 			{
 				"command": "go-playground.play",
 				"title": "Run Go Playground"
+			},
+			{
+				"command": "go-playground.changeSanboxDir",
+				"title": "Change Sandoxes Directory",
+				"icon": {
+					"light": "resources/light/folder_cog.svg",
+					"dark": "resources/dark/folder_cog.svg"
+				}
 			},
 			{
 				"command": "sandboxesView.refresh",
@@ -100,13 +109,18 @@
 			],
 			"view/title": [
 				{
-					"command": "sandboxesView.refresh",
+					"command": "go-playground.changeSanboxDir",
 					"when": "view == sandboxesView",
 					"group": "navigation"
 				},
 				{
+					"command": "sandboxesView.refresh",
+					"when": "view == sandboxesView && go-playground.sandboxDirSpecified",
+					"group": "navigation"
+				},
+				{
 					"command": "sandboxesView.newItem",
-					"when": "view == sandboxesView",
+					"when": "view == sandboxesView && go-playground.sandboxDirSpecified",
 					"group": "navigation"
 				}
 			],

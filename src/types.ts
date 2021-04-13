@@ -4,12 +4,7 @@ import { ToyView } from './toyView';
 
 export const sanboxFileExtension: string = ".go";
 export const toyFileExtension: string = ".gotoy";
-export const sanboxFileVersion = '1';
-
-export interface SandoxFileData {
-    version?: string | number;
-    code?: string;
-};
+export const extName: string = 'go-playground';
 
 export interface ToyDefinition {
     name: string;
@@ -42,7 +37,6 @@ export interface Playground {
 }
 
 export interface ExtCfg {
-    sandboxesDir: string;
     runOutChan: vscode.OutputChannel;
     sandboxView: SandboxView;
     toysView: ToyView;
@@ -51,7 +45,8 @@ export interface ExtCfg {
     statusBar: {
         runLocalItem?: vscode.StatusBarItem;
         runRemoteItem?: vscode.StatusBarItem;
-        formatItem?: vscode.StatusBarItem;
+        formatLocalItem?: vscode.StatusBarItem;
+        formatRemoteItem?: vscode.StatusBarItem;
         shareItem?: vscode.StatusBarItem;
     },
 }

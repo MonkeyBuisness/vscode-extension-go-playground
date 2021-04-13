@@ -19,11 +19,20 @@ export class StatusBar {
         return item;
     }
 
-    static createFormatItem(context: vscode.ExtensionContext) : vscode.StatusBarItem {
+    static createFormatLocalItem(context: vscode.ExtensionContext) : vscode.StatusBarItem {
         let item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 50);
-        item.command = 'statusBar.fmt';
+        item.command = 'statusBar.fmtLocal';
         context.subscriptions.push(item);
-        item.text = 'Format';
+        item.text = 'Format (local)';
+
+        return item;
+    }
+
+    static createFormatRemoteItem(context: vscode.ExtensionContext) : vscode.StatusBarItem {
+        let item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 50);
+        item.command = 'statusBar.fmtRemote';
+        context.subscriptions.push(item);
+        item.text = 'Format (remote)';
 
         return item;
     }

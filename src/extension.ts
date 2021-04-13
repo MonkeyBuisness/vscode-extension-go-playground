@@ -7,10 +7,9 @@ import * as Path from 'path';
 
 import { SandboxView } from './sandboxView';
 import { SandboxNode } from './sandboxDataProvider';
-import { SandoxFileData, ExtCfg } from './types';
+import { ExtCfg, extName } from './types';
 import { ToyView } from './toyView';
 
-const extName: string = 'go-playground';
 const sandboxViewId: string = 'sandboxesView';
 const toysViewId: string = 'toysView';
 const goPathEnv: string = "GOPATH";
@@ -18,13 +17,26 @@ const goPathEnv: string = "GOPATH";
 import { GoPlaygroundService } from './go-playground.service';
 import { LocalPlaygroundService } from './local-playground.service';
 import { StatusBar } from './statusBar';
-import { pathToFileURL } from 'node:url';
 
 export function activate(context: vscode.ExtensionContext) {
     // init extension.
     const cfg = initExtension(context);
 
-    let playCmd = vscode.commands.registerCommand('go-playground.play', async (sandbox : SandboxNode | undefined | null) => {
+    // register commands.
+    let changeSanboxDirCmd = vscode.commands.registerCommand(`${extName}.changeSanboxDir`, async () => {
+        let fileUri = await vscode.window.showOpenDialog({
+            title: "Select Folder to Store Sanboxes",
+            canSelectFolders: true
+        });
+        if (fileUri && fileUri[0]) {
+            const sBoxesDir = fileUri[0].fsPath;
+            vscode.commands.executeCommand('setContext', `${extName}.sandboxDirSpecified`, true);
+            vscode.workspace.getConfiguration(extName).update('sandboxDir', sBoxesDir);
+            cfg.sandboxView.resyncSanboxes(sBoxesDir);
+        }
+    });
+   
+    let playCmd = vscode.commands.registerCommand(`${extName}.play`, async (sandbox : SandboxNode | undefined | null) => {
         if (!sandbox) {
             sandbox = await cfg.sandboxView.createNewSandbox();
             if (!sandbox) {
@@ -34,39 +46,29 @@ export function activate(context: vscode.ExtensionContext) {
 
         // read sandbox file.
         let sandboxData: string = fs.readFileSync(sandbox.filePath).toString();
-        let fileData: SandoxFileData = JSON.parse(sandboxData);
-        let fContent: string = fileData.code || '';
 
-		/*let filepath = `${tempdir}${Path.sep}playground.go`;
-		fs.writeFile(filepath, fContent, null, () => {});
-
-        vscode.workspace
-            .openTextDocument(filepath)
-            .then((doc) => {
-                vscode.window.showTextDocument(doc);
-            });*/
+        // open file to edit.
+        let doc = await vscode.workspace.openTextDocument(sandbox.filePath);
+        vscode.window.showTextDocument(doc);
     });
 
-    vscode.workspace.onDidSaveTextDocument((document) => {
-        if (document.uri.scheme === "file") {
-            // do work
-        }
-    });
-
-    context.subscriptions.push(playCmd);
+    context.subscriptions.push(playCmd, changeSanboxDirCmd);
 }
 
 export function deactivate() {}
 
 function initExtension(context: vscode.ExtensionContext) : ExtCfg {
     // init path to the sandboxes dir.
-    const sandboxesDir : string = vscode.workspace.
+    let sandboxesDir: string | undefined = vscode.workspace.
         getConfiguration(extName).
         get('sandboxDir') || '';
-    if (sandboxesDir) {
+    if (sandboxesDir.length && sandboxesDir !== '') {
         if (!fs.existsSync(sandboxesDir)){
             fs.mkdirSync(sandboxesDir, { recursive: true });
         }
+        vscode.commands.executeCommand('setContext', `${extName}.sandboxDirSpecified`, true);
+    } else {
+        sandboxesDir = undefined;
     }
 
     // create run output channel.
@@ -77,7 +79,6 @@ function initExtension(context: vscode.ExtensionContext) : ExtCfg {
     let toysView = new ToyView(context, toysViewId);
 
     let cfg: ExtCfg = {
-        sandboxesDir: sandboxesDir,
         runOutChan: runOutput,
         sandboxView: sandboxView,
         toysView: toysView,
@@ -100,11 +101,12 @@ function initExtension(context: vscode.ExtensionContext) : ExtCfg {
     // init status bar items.
     if (cfg.localPlayground) {
         cfg.statusBar.runLocalItem = StatusBar.createRunLocalItem(context);
+        cfg.statusBar.formatLocalItem = StatusBar.createFormatLocalItem(context);
     }
     if (cfg.cloudPlayground) {
         cfg.statusBar.runRemoteItem = StatusBar.createRunRemoteItem(context);
         cfg.statusBar.shareItem = StatusBar.createShareItem(context);
-        cfg.statusBar.formatItem = StatusBar.createFormatItem(context);
+        cfg.statusBar.formatRemoteItem = StatusBar.createFormatLocalItem(context);
     }
 
     return cfg;
