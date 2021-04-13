@@ -60,6 +60,14 @@
 				"title": "Share your Sandbox code"
 			},
 			{
+				"command": "go-playground.runLocal",
+				"title": "Run Sandbox Locally"
+			},
+			{
+				"command": "go-playground.fmtLocal",
+				"title": "Format Sandbox code Locally"
+			},
+			{
 				"command": "sandboxesView.refresh",
 				"title": "Refresh",
 				"icon": {
@@ -89,6 +97,14 @@
 				"icon": {
 					"light": "resources/light/item_delete.svg",
 					"dark": "resources/dark/item_delete.svg"
+				}
+			},
+			{
+				"command": "toysView.playToy",
+				"title": "Create New Sandbox with Selected Toy",
+				"icon": {
+					"light": "resources/light/play_toy.svg",
+					"dark": "resources/dark/play_toy.svg"
 				}
 			}
 		],
@@ -154,6 +170,15 @@
 				{
 					"command": "sandboxesView.item.open",
 					"when": "view == sandboxesView && viewItem == 'sandbox-item'"
+				},
+				{
+					"command": "toysView.playToy",
+					"when": "view == toysView && viewItem == 'toy'",
+					"group": "inline"
+				},
+				{
+					"command": "toysView.playToy",
+					"when": "view == toysView && viewItem == 'toy'"
 				}
 			]
 		}

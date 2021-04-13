@@ -23,7 +23,7 @@ export class StatusBar {
 
     initRunLocalItem(context: vscode.ExtensionContext) : void {
         this.runLocalItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-        this.runLocalItem.command = 'statusBar.runLocal';
+        this.runLocalItem.command = `${extName}.runLocal`;
         context.subscriptions.push(this.runLocalItem);
         this.runLocalItem.text = 'Local Run';
     }
@@ -37,7 +37,7 @@ export class StatusBar {
 
     initFormatLocalItem(context: vscode.ExtensionContext) : void {
         this.formatLocalItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 50);
-        this.formatLocalItem.command = 'statusBar.fmtLocal';
+        this.formatLocalItem.command = `${extName}.fmtLocal`;
         context.subscriptions.push(this.formatLocalItem);
         this.formatLocalItem.text = 'Format (local)';
     }

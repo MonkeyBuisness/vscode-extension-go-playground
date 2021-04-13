@@ -63,13 +63,12 @@ export class ToyNode extends vscode.TreeItem {
         public readonly template: string,
         public readonly filePath?: string,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState =
-            vscode.TreeItemCollapsibleState.None,
-        public readonly command?: vscode.Command
+            vscode.TreeItemCollapsibleState.None
 	) {
 		super(label, collapsibleState);
 
 		this.tooltip = this.template;
-        this.contextValue = this.isPresetable ? 'def-toy' : 'user-toy';
+        this.contextValue = 'toy';
         let icon: string = this.isPresetable ? 'default_toy.svg' : 'user_toy.svg';
         this.iconPath = {
             light: path.join(__filename, '..', '..', 'resources', 'light', icon),

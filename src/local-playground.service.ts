@@ -1,24 +1,39 @@
-const { URLSearchParams } = require('url');
-import fetch, { RequestInit } from "node-fetch";
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 import {
     PlaygroundCompileResponse,
     PlaygroundFmtResponse,
-    Playground
+    Playground,
+    stdoutKind,
+    PlaygroundEvent
 } from './types';
 
 export class LocalPlaygroundService implements Playground {
     constructor() {}
 
-    async compile(body?: string) : Promise<PlaygroundCompileResponse> {
-        /*let response = await fetch(`${this._baseURL}/compile`, GoPlaygroundService._pepareCompileBody(body));
-        return (await response).json();*/
-        return {};
+    async compile(fPath: string) : Promise<PlaygroundCompileResponse | void> {
+        let resp: PlaygroundCompileResponse = {
+            Status: 0
+        };
+
+        try {
+            let { stdout } = await exec(`go run ${fPath}`);
+            resp.Events = [{
+                Kind: stdoutKind,
+                Message: stdout,
+            }];
+        } catch (e) {
+            resp.Errors = e.message;
+            resp.Status = e.code;
+        }
+
+        return resp;
     }
 
-    async format(body?: string) : Promise<PlaygroundFmtResponse> {
-        /*let response = fetch(`${this._baseURL}/fmt`, GoPlaygroundService._pepareFmtBody(body));
-        return (await response).json();*/
-        return {};
+    async format(fPath: string) : Promise<PlaygroundFmtResponse | void> {
+        await exec(`go fmt ${fPath}`);
+       
+        return;
     }
 
     async share(fPath: string) : Promise<string | void> {

@@ -15,7 +15,6 @@ const goPathEnv: string = "GOPATH";
 import { GoPlaygroundService } from './go-playground.service';
 import { LocalPlaygroundService } from './local-playground.service';
 import { StatusBar } from './statusBar';
-import { Response } from 'node-fetch';
 
 export function activate(context: vscode.ExtensionContext) {
     // init extension.
@@ -95,12 +94,38 @@ export function activate(context: vscode.ExtensionContext) {
 
         shareRemotely(cfg, editor.document.uri.fsPath);
     });
+    let runSandboxLocallyCmd = vscode.commands.registerCommand(`${extName}.runLocal`, async () => {
+        if (!cfg.localPlayground) {
+            return;
+        }
+
+        let editor = vscode.window.activeTextEditor;
+        if (!editor || editor.document.languageId !== golangLanguageId) {
+            return;
+        }
+
+        compileLocally(cfg, editor.document.uri.fsPath);
+    });
+    let fmtSandboxLocallyCmd = vscode.commands.registerCommand(`${extName}.fmtLocal`, async () => {
+        if (!cfg.localPlayground) {
+            return;
+        }
+
+        let editor = vscode.window.activeTextEditor;
+        if (!editor || editor.document.languageId !== golangLanguageId) {
+            return;
+        }
+
+        fmtLocally(cfg, editor.document.uri.fsPath);
+    });
     context.subscriptions.push(
         playCmd,
         changeSanboxDirCmd,
         runSandboxRemotelyCmd,
         fmtSandboxRemotelyCmd,
-        shareSandboxRemotelyCmd
+        shareSandboxRemotelyCmd,
+        runSandboxLocallyCmd,
+        fmtSandboxLocallyCmd
     );
 
     // set global listeners.
@@ -143,7 +168,6 @@ function initExtension(context: vscode.ExtensionContext) : ExtCfg {
     // init views.
     let sandboxView = new SandboxView(context, sandboxViewId, sandboxesDir);
     let toysView = new ToyView(context, toysViewId);
-
 
     let cfg: ExtCfg = {
         runOutChan: runOutput,
@@ -243,6 +267,50 @@ async function shareRemotely(cfg: ExtCfg, fPath: string) {
     }
 
     cfg.runOutChan.appendLine(`Your share link: ${resp}`);
+}
+
+async function compileLocally(cfg: ExtCfg, fPath: string) {
+    cfg.runOutChan.show();
+    cfg.runOutChan.clear();
+
+    let resp = await cfg.localPlayground?.compile(fPath);
+    if (!resp) {
+        return;
+    }
+
+    cfg.runOutChan.appendLine(`[Status: ${resp.Status}]`);
+
+    if (resp.Errors) {
+        cfg.runOutChan.appendLine(resp.Errors);
+        return;
+    }
+
+    if (!resp.Events) {
+        return;
+    }
+
+    for (let e of resp.Events!) {
+        if (e.Kind !== stdoutKind) {
+            continue;
+        }
+        
+        if (e.Delay) {
+            await delay(e.Delay / 1000000);
+        }
+
+        if (!e.Message) {
+            continue;
+        }
+        
+        cfg.runOutChan.append(e.Message!);
+    }
+}
+
+async function fmtLocally(cfg: ExtCfg, fPath: string) {
+    cfg.runOutChan.show();
+    cfg.runOutChan.clear();
+
+    await cfg.localPlayground?.format(fPath);
 }
 
 function delay(ms: number) {
