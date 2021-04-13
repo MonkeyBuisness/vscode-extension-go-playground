@@ -17,6 +17,10 @@
 		"onView:sandboxesView",
 		"onView:toysView"
 	],
+	"publisher": "ArtsemHutarau",
+	"repository": {
+		"url": "https://github.com/MonkeyBuisness/vscode-extension-go-playground"
+	},
 	"keywords": [],
 	"main": "./out/extension.js",
 	"contributes": {
