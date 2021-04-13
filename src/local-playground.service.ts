@@ -20,4 +20,8 @@ export class LocalPlaygroundService implements Playground {
         return (await response).json();*/
         return {};
     }
+
+    async share(fPath: string) : Promise<string | void> {
+        return "";
+    }
 }

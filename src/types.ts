@@ -1,10 +1,13 @@
 import * as vscode from 'vscode';
 import { SandboxView } from './sandboxView';
+import { StatusBar } from './statusBar';
 import { ToyView } from './toyView';
 
-export const sanboxFileExtension: string = ".go";
-export const toyFileExtension: string = ".gotoy";
+export const sanboxFileExtension: string = '.go';
+export const toyFileExtension: string = '.gotoy';
 export const extName: string = 'go-playground';
+export const golangLanguageId: string = 'go';
+export const stdoutKind: string = 'stdout';
 
 export interface ToyDefinition {
     name: string;
@@ -12,28 +15,29 @@ export interface ToyDefinition {
 };
 
 export interface PlaygroundCompileResponse {
-    errors?: string;
-    events?: PlaygroundEvent[];
-    isTest?: boolean;
-    status?: number;
-    testsFailed?: number;
-    vetOK?: boolean;
+    Errors?: string;
+    Events?: PlaygroundEvent[];
+    IsTest?: boolean;
+    Status?: number;
+    TestsFailed?: number;
+    VetOK?: boolean;
 }
 
 export interface PlaygroundEvent {
-    delay?: number;
-    kind?: string;
-    message?: string;
+    Delay?: number;
+    Kind?: string;
+    Message?: string;
 }
 
 export interface PlaygroundFmtResponse {
-    body?: string;
-    error?: string;
+    Body?: string;
+    Error?: string;
 }
 
 export interface Playground {
-    compile(baseURL: string, body?: string) : Promise<PlaygroundCompileResponse>
-    format(body?: string) : Promise<PlaygroundFmtResponse>
+    compile(fPath: string) : Promise<PlaygroundCompileResponse | void>
+    format(fPath: string) : Promise<PlaygroundFmtResponse | void>
+    share(fPath: string) : Promise<string | void>
 }
 
 export interface ExtCfg {
@@ -42,13 +46,7 @@ export interface ExtCfg {
     toysView: ToyView;
     cloudPlayground?: Playground;
     localPlayground?: Playground;
-    statusBar: {
-        runLocalItem?: vscode.StatusBarItem;
-        runRemoteItem?: vscode.StatusBarItem;
-        formatLocalItem?: vscode.StatusBarItem;
-        formatRemoteItem?: vscode.StatusBarItem;
-        shareItem?: vscode.StatusBarItem;
-    },
+    statusBar?: StatusBar;
 }
 
 export const presetToyDefinitions: ToyDefinition[] = [

@@ -2,12 +2,10 @@
 
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import * as os from 'os';
-import * as Path from 'path';
 
 import { SandboxView } from './sandboxView';
 import { SandboxNode } from './sandboxDataProvider';
-import { ExtCfg, extName } from './types';
+import { ExtCfg, extName, golangLanguageId, stdoutKind } from './types';
 import { ToyView } from './toyView';
 
 const sandboxViewId: string = 'sandboxesView';
@@ -17,6 +15,7 @@ const goPathEnv: string = "GOPATH";
 import { GoPlaygroundService } from './go-playground.service';
 import { LocalPlaygroundService } from './local-playground.service';
 import { StatusBar } from './statusBar';
+import { Response } from 'node-fetch';
 
 export function activate(context: vscode.ExtensionContext) {
     // init extension.
@@ -35,7 +34,6 @@ export function activate(context: vscode.ExtensionContext) {
             cfg.sandboxView.resyncSanboxes(sBoxesDir);
         }
     });
-   
     let playCmd = vscode.commands.registerCommand(`${extName}.play`, async (sandbox : SandboxNode | undefined | null) => {
         if (!sandbox) {
             sandbox = await cfg.sandboxView.createNewSandbox();
@@ -51,8 +49,76 @@ export function activate(context: vscode.ExtensionContext) {
         let doc = await vscode.workspace.openTextDocument(sandbox.filePath);
         vscode.window.showTextDocument(doc);
     });
+    let runSandboxRemotelyCmd = vscode.commands.registerCommand(`${extName}.runRemote`, async () => {
+        if (!cfg.cloudPlayground) {
+            return;
+        }
 
-    context.subscriptions.push(playCmd, changeSanboxDirCmd);
+        let editor = vscode.window.activeTextEditor;
+        if (!editor || editor.document.languageId !== golangLanguageId) {
+            return;
+        }
+
+        compileRemotely(cfg, editor.document.uri.fsPath);
+    });
+    let fmtSandboxRemotelyCmd = vscode.commands.registerCommand(`${extName}.fmtRemote`, async () => {
+        if (!cfg.cloudPlayground) {
+            return;
+        }
+
+        let editor = vscode.window.activeTextEditor;
+        if (!editor || editor.document.languageId !== golangLanguageId) {
+            return;
+        }
+
+        let fmtCode = await fmtRemotely(cfg, editor.document.uri.fsPath);
+        if (!fmtCode) {
+            return;
+        }
+
+        editor.edit(editorBuilder => {
+            let firstLine = editor!.document.lineAt(0);
+            let lastLine = editor!.document.lineAt(editor!.document.lineCount - 1);
+            let textRange = new vscode.Range(firstLine.range.start, lastLine.range.end);
+            editorBuilder.replace(textRange, fmtCode!);
+        });
+    });
+    let shareSandboxRemotelyCmd = vscode.commands.registerCommand(`${extName}.share`, async () => {
+        if (!cfg.cloudPlayground) {
+            return;
+        }
+
+        let editor = vscode.window.activeTextEditor;
+        if (!editor || editor.document.languageId !== golangLanguageId) {
+            return;
+        }
+
+        shareRemotely(cfg, editor.document.uri.fsPath);
+    });
+    context.subscriptions.push(
+        playCmd,
+        changeSanboxDirCmd,
+        runSandboxRemotelyCmd,
+        fmtSandboxRemotelyCmd,
+        shareSandboxRemotelyCmd
+    );
+
+    // set global listeners.
+    const statusBarVisibilityListener = (doc: vscode.TextDocument) => {
+        if (doc.languageId !== golangLanguageId) {
+            cfg.statusBar?.hide();
+            return;
+        }
+
+        cfg.statusBar?.show();
+    };
+    vscode.workspace.onDidOpenTextDocument(statusBarVisibilityListener);
+    vscode.window.onDidChangeActiveTextEditor((e) => {
+        if (!e) {
+            return;
+        }
+        return statusBarVisibilityListener(e.document);
+    });
 }
 
 export function deactivate() {}
@@ -78,11 +144,11 @@ function initExtension(context: vscode.ExtensionContext) : ExtCfg {
     let sandboxView = new SandboxView(context, sandboxViewId, sandboxesDir);
     let toysView = new ToyView(context, toysViewId);
 
+
     let cfg: ExtCfg = {
         runOutChan: runOutput,
         sandboxView: sandboxView,
         toysView: toysView,
-        statusBar: {}
     };
 
     // init local playground.
@@ -98,16 +164,87 @@ function initExtension(context: vscode.ExtensionContext) : ExtCfg {
         cfg.cloudPlayground = new GoPlaygroundService(cloudAPI);
     }
 
-    // init status bar items.
-    if (cfg.localPlayground) {
-        cfg.statusBar.runLocalItem = StatusBar.createRunLocalItem(context);
-        cfg.statusBar.formatLocalItem = StatusBar.createFormatLocalItem(context);
-    }
-    if (cfg.cloudPlayground) {
-        cfg.statusBar.runRemoteItem = StatusBar.createRunRemoteItem(context);
-        cfg.statusBar.shareItem = StatusBar.createShareItem(context);
-        cfg.statusBar.formatRemoteItem = StatusBar.createFormatLocalItem(context);
-    }
+    cfg.statusBar = new StatusBar(
+        context, cfg.localPlayground !== undefined, cfg.cloudPlayground !== undefined);
 
     return cfg;
+}
+
+async function compileRemotely(cfg: ExtCfg, fPath: string) {
+    cfg.runOutChan.show();
+    cfg.runOutChan.clear(); 
+
+    let resp = await cfg.cloudPlayground?.compile(fPath);
+    if (!resp) {
+        return;
+    }
+
+    cfg.runOutChan.appendLine(`[Status: ${resp.Status}]`);
+    if (resp.IsTest) {
+        cfg.runOutChan.appendLine(`[Tests failed: ${resp.TestsFailed}]`);
+    }
+
+    if (resp.Errors) {
+        cfg.runOutChan.appendLine(resp.Errors);
+        return;
+    }
+
+    if (!resp.Events) {
+        return;
+    }
+
+    for (let e of resp.Events!) {
+        if (e.Kind !== stdoutKind) {
+            continue;
+        }
+        
+        if (e.Delay) {
+            await delay(e.Delay / 1000000);
+        }
+
+        if (!e.Message) {
+            continue;
+        }
+
+        // check for clear symbol.
+        if (e.Message!.charCodeAt(0) === 12) {
+            cfg.runOutChan.clear();
+            e.Message = e.Message.slice(1);
+        }
+        
+        cfg.runOutChan.append(e.Message!);
+    }
+}
+
+async function fmtRemotely(cfg: ExtCfg, fPath: string) : Promise<string | undefined> {
+    cfg.runOutChan.show();
+    cfg.runOutChan.clear(); 
+
+    let resp = await cfg.cloudPlayground?.format(fPath);
+    if (!resp) {
+        return;
+    }
+
+    if (resp.Error) {
+        cfg.runOutChan.appendLine(resp.Error);
+        return;
+    }
+
+    return resp.Body;
+}
+
+async function shareRemotely(cfg: ExtCfg, fPath: string) {
+    cfg.runOutChan.show();
+    cfg.runOutChan.clear();
+
+    let resp = await cfg.cloudPlayground?.share(fPath);
+    if (!resp) {
+        return;
+    }
+
+    cfg.runOutChan.appendLine(`Your share link: ${resp}`);
+}
+
+function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

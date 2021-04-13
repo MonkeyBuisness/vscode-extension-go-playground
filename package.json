@@ -48,6 +48,18 @@
 				}
 			},
 			{
+				"command": "go-playground.runRemote",
+				"title": "Run Sandbox Remotely"
+			},
+			{
+				"command": "go-playground.fmtRemote",
+				"title": "Format Sandbox code Remotely"
+			},
+			{
+				"command": "go-playground.share",
+				"title": "Share your Sandbox code"
+			},
+			{
 				"command": "sandboxesView.refresh",
 				"title": "Refresh",
 				"icon": {

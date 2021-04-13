@@ -1,48 +1,74 @@
 import * as vscode from 'vscode';
+import { extName } from './types';
 
 export class StatusBar {
-    static createRunLocalItem(context: vscode.ExtensionContext) : vscode.StatusBarItem {
-        let item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-        item.command = 'statusBar.runLocal';
-        context.subscriptions.push(item);
-        item.text = 'Local Run';
+    runLocalItem?: vscode.StatusBarItem;
+    runRemoteItem?: vscode.StatusBarItem;
+    formatLocalItem?: vscode.StatusBarItem;
+    formatRemoteItem?: vscode.StatusBarItem;
+    shareItem?: vscode.StatusBarItem;
 
-        return item;
+    constructor(context: vscode.ExtensionContext, withLocal: boolean = true, withRemote: boolean = true) {
+        if (withLocal) {
+            this.initRunLocalItem(context);
+            this.initFormatLocalItem(context);
+        }
+
+        if (withRemote) {
+            this.initRunRemoteItem(context);
+            this.initFormatRemoteItem(context);
+            this.initShareItem(context);
+        }
     }
 
-    static createRunRemoteItem(context: vscode.ExtensionContext) : vscode.StatusBarItem {
-        let item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-        item.command = 'statusBar.runRemote';
-        context.subscriptions.push(item);
-        item.text = 'Remote Run';
-
-        return item;
+    initRunLocalItem(context: vscode.ExtensionContext) : void {
+        this.runLocalItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+        this.runLocalItem.command = 'statusBar.runLocal';
+        context.subscriptions.push(this.runLocalItem);
+        this.runLocalItem.text = 'Local Run';
     }
 
-    static createFormatLocalItem(context: vscode.ExtensionContext) : vscode.StatusBarItem {
-        let item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 50);
-        item.command = 'statusBar.fmtLocal';
-        context.subscriptions.push(item);
-        item.text = 'Format (local)';
-
-        return item;
+    initRunRemoteItem(context: vscode.ExtensionContext) : void {
+        this.runRemoteItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+        this.runRemoteItem.command = `${extName}.runRemote`;
+        context.subscriptions.push(this.runRemoteItem);
+        this.runRemoteItem.text = 'Remote Run';
     }
 
-    static createFormatRemoteItem(context: vscode.ExtensionContext) : vscode.StatusBarItem {
-        let item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 50);
-        item.command = 'statusBar.fmtRemote';
-        context.subscriptions.push(item);
-        item.text = 'Format (remote)';
-
-        return item;
+    initFormatLocalItem(context: vscode.ExtensionContext) : void {
+        this.formatLocalItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 50);
+        this.formatLocalItem.command = 'statusBar.fmtLocal';
+        context.subscriptions.push(this.formatLocalItem);
+        this.formatLocalItem.text = 'Format (local)';
     }
 
-    static createShareItem(context: vscode.ExtensionContext) : vscode.StatusBarItem {
-        let item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 20);
-        item.command = 'statusBar.share';
-        context.subscriptions.push(item);
-        item.text = 'Share';
+    initFormatRemoteItem(context: vscode.ExtensionContext) : void {
+        this.formatRemoteItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 50);
+        this.formatRemoteItem.command = `${extName}.fmtRemote`;
+        context.subscriptions.push(this.formatRemoteItem);
+        this.formatRemoteItem.text = 'Format (remote)';
+    }
 
-        return item;
+    initShareItem(context: vscode.ExtensionContext) : void {
+        this.shareItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 20);
+        this.shareItem.command = `${extName}.share`;
+        context.subscriptions.push(this.shareItem);
+        this.shareItem.text = 'Share';
+    }
+
+    hide() {
+        this.runLocalItem?.hide();
+        this.runRemoteItem?.hide();
+        this.formatLocalItem?.hide();
+        this.formatRemoteItem?.hide();
+        this.shareItem?.hide();
+    }
+
+    show() {
+        this.runLocalItem?.show();
+        this.runRemoteItem?.show();
+        this.formatLocalItem?.show();
+        this.formatRemoteItem?.show();
+        this.shareItem?.show();
     }
 }

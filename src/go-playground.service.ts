@@ -1,5 +1,6 @@
 const { URLSearchParams } = require('url');
 import fetch, { RequestInit } from "node-fetch";
+import * as fs from 'fs';
 import {
     PlaygroundCompileResponse,
     PlaygroundFmtResponse,
@@ -9,14 +10,23 @@ import {
 export class GoPlaygroundService implements Playground {
     constructor(private _baseURL: string) {}
 
-    async compile(body?: string) : Promise<PlaygroundCompileResponse> {
+    async compile(fPath: string) : Promise<PlaygroundCompileResponse | void> {
+        const body: string = fs.readFileSync(fPath).toString();
         let response = await fetch(`${this._baseURL}/compile`, GoPlaygroundService._pepareCompileBody(body));
         return (await response).json();
     }
 
-    async format(body?: string) : Promise<PlaygroundFmtResponse> {
+    async format(fPath: string) : Promise<PlaygroundFmtResponse | void> {
+        const body: string = fs.readFileSync(fPath).toString();
         let response = fetch(`${this._baseURL}/fmt`, GoPlaygroundService._pepareFmtBody(body));
         return (await response).json();
+    }
+
+    async share(fPath: string) : Promise<string | void> {
+        const body: string = fs.readFileSync(fPath).toString();
+        let response = fetch(`${this._baseURL}/share`, GoPlaygroundService._pepareShareBody(body));
+        let shareId = await (await response).text();
+        return `${this._baseURL}/p/${shareId}`;
     }
 
     private static _pepareCompileBody(body?: string) : RequestInit {
@@ -41,6 +51,13 @@ export class GoPlaygroundService implements Playground {
         return {
             method: 'POST',
             body: encodedParams
+        };
+    }
+
+    private static _pepareShareBody(body?: string) : RequestInit {
+        return {
+            method: 'POST',
+            body: body
         };
     }
 }
