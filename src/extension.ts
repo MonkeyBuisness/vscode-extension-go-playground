@@ -5,7 +5,7 @@ import * as fs from 'fs';
 
 import { SandboxView } from './sandboxView';
 import { SandboxNode } from './sandboxDataProvider';
-import { ExtCfg, extName, golangLanguageId, stdoutKind } from './types';
+import { ExecCallback, ExtCfg, extName, golangLanguageId, stdoutKind } from './types';
 import { ToyView } from './toyView';
 
 const sandboxViewId: string = 'sandboxesView';
@@ -280,10 +280,15 @@ async function compileLocally(cfg: ExtCfg, fPath: string) {
     cfg.runOutChan.show();
     cfg.runOutChan.clear();
 
-    let resp = await cfg.localPlayground?.compile(fPath);
+    const callback: ExecCallback = {
+        stdout: (data: string) => cfg.runOutChan.append(data)
+    };
+
+    let resp = await cfg.localPlayground?.compile(fPath, callback);
     if (!resp) {
         return;
     }
+    cfg.runOutChan.clear();
 
     cfg.runOutChan.appendLine(`[Status: ${resp.Status}]`);
 

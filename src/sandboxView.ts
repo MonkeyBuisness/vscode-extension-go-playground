@@ -42,17 +42,19 @@ export class SandboxView {
 	}
 
 	async createNewSandbox(content?: string) : Promise<SandboxNode | null> {
-		let filepath = await vscode.window.showInputBox({
+		let fileName = await vscode.window.showInputBox({
 			prompt: 'Enter the new sandbox name'
-		})
-		.then(input => `${this.sandboxDir}${Path.sep}${input}${sanboxFileExtension}`)
-		.then(filepath => UniqueFileName.get(filepath, {}));
+		});
+		if (!fileName) {
+			return null;
+		}
 
-		fs.writeFileSync(filepath, content || '');
+		let input: string = await UniqueFileName.get(`${this.sandboxDir}${Path.sep}${fileName}${sanboxFileExtension}`, {});
+		fs.writeFileSync(input, content || '');
 	
 		this._sandboxProvider.refresh();
 
-		return await this._sandboxProvider.findNodeByFilePath(filepath);
+		return await this._sandboxProvider.findNodeByFilePath(input);
 	}
 
 	resyncSanboxes(newDir: string) : void {

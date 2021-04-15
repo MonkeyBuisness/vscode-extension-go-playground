@@ -2,7 +2,7 @@
 	"name": "go-playground",
 	"displayName": "go-playground",
 	"description": "Simple Go Playground environment in your VScode",
-	"version": "0.0.2",
+	"version": "0.1.0",
 	"engines": {
 		"vscode": "^1.55.0"
 	},

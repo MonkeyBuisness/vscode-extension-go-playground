@@ -4,13 +4,14 @@ import * as fs from 'fs';
 import {
     PlaygroundCompileResponse,
     PlaygroundFmtResponse,
-    Playground
+    Playground,
+    ExecCallback
 } from './types';
 
 export class GoPlaygroundService implements Playground {
     constructor(private _baseURL: string) {}
 
-    async compile(fPath: string) : Promise<PlaygroundCompileResponse | void> {
+    async compile(fPath: string, callback?: ExecCallback) : Promise<PlaygroundCompileResponse | void> {
         const body: string = fs.readFileSync(fPath).toString();
         let response = await fetch(`${this._baseURL}/compile`, GoPlaygroundService._pepareCompileBody(body));
         return (await response).json();
