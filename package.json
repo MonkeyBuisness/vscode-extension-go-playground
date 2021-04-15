@@ -11,7 +11,7 @@
 		"Visualization",
 		"Other"
 	],
-	"icon": "resources/go-palyground.png",
+	"icon": "images/icon.png",
 	"activationEvents": [
 		"onCommand:go-playground.play",
 		"onCommand:go-playground.changeSanboxDir",
