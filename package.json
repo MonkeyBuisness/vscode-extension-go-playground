@@ -2,7 +2,7 @@
 	"name": "go-playground",
 	"displayName": "go-playground",
 	"description": "Simple Go Playground environment in your VScode",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.55.0"
 	},
@@ -17,6 +17,14 @@
 		"onView:sandboxesView",
 		"onView:toysView"
 	],
+	"bugs": {
+		"email": "gutorov.artem@ayndex.ru",
+		"url": "https://github.com/MonkeyBuisness/vscode-extension-go-playground/issues"
+	},
+	"author": {
+		"email": "gutorov.artem@yandex.ru",
+		"name": "Artsem Hutarau"
+	},
 	"publisher": "ArtsemHutarau",
 	"repository": {
 		"url": "https://github.com/MonkeyBuisness/vscode-extension-go-playground"

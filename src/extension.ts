@@ -29,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (fileUri && fileUri[0]) {
             const sBoxesDir = fileUri[0].fsPath;
             vscode.commands.executeCommand('setContext', `${extName}.sandboxDirSpecified`, true);
-            vscode.workspace.getConfiguration(extName).update('sandboxDir', sBoxesDir);
+            vscode.workspace.getConfiguration(extName).update('sandboxDir', sBoxesDir, vscode.ConfigurationTarget.Global);
             cfg.sandboxView.resyncSanboxes(sBoxesDir);
             cfg.toysView.refresh();
         }

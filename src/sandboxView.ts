@@ -48,7 +48,7 @@ export class SandboxView {
 		.then(input => `${this.sandboxDir}${Path.sep}${input}${sanboxFileExtension}`)
 		.then(filepath => UniqueFileName.get(filepath, {}));
 
-		fs.writeFileSync(filepath, content);
+		fs.writeFileSync(filepath, content || '');
 	
 		this._sandboxProvider.refresh();
 
