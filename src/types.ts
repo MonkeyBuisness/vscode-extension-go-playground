@@ -34,8 +34,12 @@ export interface PlaygroundFmtResponse {
     Error?: string;
 }
 
+export interface ExecCallback {
+    stdout(data?: string) : void
+}
+
 export interface Playground {
-    compile(fPath: string) : Promise<PlaygroundCompileResponse | void>
+    compile(fPath: string, callback?: ExecCallback) : Promise<PlaygroundCompileResponse | void>
     format(fPath: string) : Promise<PlaygroundFmtResponse | void>
     share(fPath: string) : Promise<string | void>
 }

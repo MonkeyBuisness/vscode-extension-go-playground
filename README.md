@@ -27,3 +27,9 @@ This extension contributes the following settings:
 
 - Fixed bug with `undefined` initial value for a new created sandbox
 - Sandbox directory settings are now saved in the `global` target space
+
+### 0.1.0
+
+- Fixed bug with `undefined` file name for a new created sandbox
+- Added extension icon
+- Added async output for local runned sandboxes
