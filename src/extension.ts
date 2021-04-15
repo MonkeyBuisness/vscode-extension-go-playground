@@ -5,7 +5,14 @@ import * as fs from 'fs';
 
 import { SandboxView } from './sandboxView';
 import { SandboxNode } from './sandboxDataProvider';
-import { ExecCallback, ExtCfg, extName, golangLanguageId, stdoutKind } from './types';
+import {
+    ExecCallback,
+    ExtCfg,
+    extName,
+    golangLanguageId,
+    Playground,
+    stdoutKind 
+} from './types';
 import { ToyView } from './toyView';
 
 const sandboxViewId: string = 'sandboxesView';
@@ -65,7 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        compileRemotely(cfg, editor.document.uri.fsPath);
+        compile(cfg.cloudPlayground, cfg.runOutChan, editor.document.uri.fsPath);
     });
     let fmtSandboxRemotelyCmd = vscode.commands.registerCommand(`${extName}.fmtRemote`, async () => {
         if (!cfg.cloudPlayground) {
@@ -111,7 +118,7 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        compileLocally(cfg, editor.document.uri.fsPath);
+        compile(cfg.localPlayground, cfg.runOutChan, editor.document.uri.fsPath);
     });
     let fmtSandboxLocallyCmd = vscode.commands.registerCommand(`${extName}.fmtLocal`, async () => {
         if (!cfg.localPlayground) {
@@ -201,29 +208,34 @@ function initExtension(context: vscode.ExtensionContext) : ExtCfg {
     return cfg;
 }
 
-async function compileRemotely(cfg: ExtCfg, fPath: string) {
-    cfg.runOutChan.show();
-    cfg.runOutChan.clear();
+async function compile(playground: Playground, runOutChan: vscode.OutputChannel, fPath: string) {
+    runOutChan.show();
+    runOutChan.clear();
 
-    let resp = await cfg.cloudPlayground?.compile(fPath);
+    const callback: ExecCallback = {
+        stdout: (data: string) => runOutChan.append(data)
+    };
+
+    let resp = await playground.compile(fPath, callback);
     if (!resp) {
         return;
     }
+    runOutChan.clear();
 
-    cfg.runOutChan.appendLine(`[Status: ${resp.Status}]`);
+    runOutChan.appendLine(`[Status: ${resp.Status}]`);
     if (resp.IsTest) {
-        cfg.runOutChan.appendLine(`[Tests failed: ${resp.TestsFailed}]`);
+        runOutChan.appendLine(`[Tests failed: ${resp.TestsFailed}]`);
     }
 
-    if (resp.Errors) {
-        cfg.runOutChan.appendLine(resp.Errors);
+    if (resp.Errors && resp.Errors.length) {
+        runOutChan.appendLine(resp.Errors);
         return;
     }
 
     if (!resp.Events) {
         return;
     }
-
+    
     for (let e of resp.Events!) {
         if (e.Kind !== stdoutKind) {
             continue;
@@ -239,11 +251,11 @@ async function compileRemotely(cfg: ExtCfg, fPath: string) {
 
         // check for clear symbol.
         if (e.Message!.charCodeAt(0) === 12) {
-            cfg.runOutChan.clear();
+            runOutChan.clear();
             e.Message = e.Message.slice(1);
         }
         
-        cfg.runOutChan.append(e.Message!);
+        runOutChan.append(e.Message!);
     }
 }
 
@@ -274,44 +286,6 @@ async function shareRemotely(cfg: ExtCfg, fPath: string) {
     }
 
     cfg.runOutChan.appendLine(`Your share link: ${resp}`);
-}
-
-async function compileLocally(cfg: ExtCfg, fPath: string) {
-    cfg.runOutChan.show();
-    cfg.runOutChan.clear();
-
-    const callback: ExecCallback = {
-        stdout: (data: string) => cfg.runOutChan.append(data)
-    };
-
-    let resp = await cfg.localPlayground?.compile(fPath, callback);
-    if (!resp) {
-        return;
-    }
-    cfg.runOutChan.clear();
-
-    cfg.runOutChan.appendLine(`[Status: ${resp.Status}]`);
-
-    if (resp.Errors) {
-        cfg.runOutChan.appendLine(resp.Errors);
-        return;
-    }
-
-    if (!resp.Events) {
-        return;
-    }
-
-    for (let e of resp.Events!) {
-        if (e.Kind !== stdoutKind) {
-            continue;
-        }
-
-        if (!e.Message) {
-            continue;
-        }
-        
-        cfg.runOutChan.append(e.Message!);
-    }
 }
 
 async function fmtLocally(cfg: ExtCfg, fPath: string) {

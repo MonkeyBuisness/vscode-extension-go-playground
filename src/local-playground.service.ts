@@ -6,22 +6,30 @@ import {
     PlaygroundFmtResponse,
     Playground,
     stdoutKind,
-    ExecCallback
+    ExecCallback,
+    sanboxFileExtension
 } from './types';
 
 export class LocalPlaygroundService implements Playground {
     constructor() {}
 
     async compile(fPath: string, callback?: ExecCallback) : Promise<PlaygroundCompileResponse | void> {
+        const isTest: boolean = fPath.endsWith(`_test${sanboxFileExtension}`);
+        const commands: string[] = isTest ? ['test', '-v'] : ['run'];
+        commands.push(fPath);
+
         let resp: PlaygroundCompileResponse = {
             Status: 0,
-            Events: []
+            Events: [],
+            IsTest: isTest,
+            TestsFailed: 0,
+            Errors: ''
         };
 
         try {
-            const cmd = spawn('go', ['run', fPath]);
+            const { stdout, stderr } = spawn('go', commands);
 
-            for await (const data of cmd.stdout) {
+            for await (const data of stdout) {
                 if (!data) {
                     continue;
                 }
@@ -32,6 +40,18 @@ export class LocalPlaygroundService implements Playground {
                     Kind: stdoutKind,
                     Message: log,
                 });
+
+                if (isTest) {
+                    resp.TestsFailed! += (log.match(/--- FAIL:/g) || []).length;
+                }
+            }
+
+            for await (const err of stderr) {
+                if (!err) {
+                    continue;
+                }
+
+                resp.Errors = resp.Errors!.concat(err.toString());
             }
         } catch (e) {
             resp.Errors = e.message;
