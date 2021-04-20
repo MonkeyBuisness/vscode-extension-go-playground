@@ -138,6 +138,11 @@
 		"views": {
 			"go-playground": [
 				{
+					"id": "envView",
+					"type": "webview",
+					"name": "Environment"
+				},
+				{
 					"id": "toysView",
 					"name": "Toys"
 				},
