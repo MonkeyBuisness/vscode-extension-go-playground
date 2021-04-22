@@ -23,15 +23,16 @@ import { GoPlaygroundService } from './go-playground.service';
 import { LocalPlaygroundService } from './local-playground.service';
 import { StatusBar } from './statusBar';
 
-// import { TestService } from './commands/handler';
-// import { Injector } from './util';
+import { TestService } from './commands/handler';
 
 export function activate(context: vscode.ExtensionContext) {
     /////////////
     const provider = new ColorsViewProvider(context.extensionUri);
     context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(ColorsViewProvider.viewType, provider));
-    //const h = Injector.resolve<TestService>(TestService);
+    //const hh: CommandHandler = new CommandHandler();
+    const h: TestService = new TestService();
+    h.test(context);
     /////////////
 
 
@@ -395,6 +396,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 				<ul class="color-list">
 				</ul>
 				<button class="add-color-button">Add Color</button>
+                <input />
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
