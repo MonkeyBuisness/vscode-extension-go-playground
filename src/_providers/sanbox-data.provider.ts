@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { sanboxFileExtension, extName } from './types';
+import { sanboxFileExtension, extName } from '../types';
 
 export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<SandboxNode | undefined | void> =
@@ -10,8 +10,8 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
         this._onDidChangeTreeData.event;
 
     constructor(
-        private viewId: string,
-        private sandboxDir?: string
+        private _viewId: string,
+        private _sandboxDir?: string
     ) {}
 
     refresh(): void {
@@ -19,7 +19,7 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
     }
 
     setSandoxDir(dir: string) {
-        this.sandboxDir = dir;
+        this._sandboxDir = dir;
     }
 
     getTreeItem(element: SandboxNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
@@ -27,7 +27,7 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
     }
 
     getChildren(element?: SandboxNode): vscode.ProviderResult<SandboxNode[]> {
-        if (!this.sandboxDir) {
+        if (!this._sandboxDir) {
             return Promise.resolve([this._getMissingFolderNode()]);
         }
 
@@ -66,15 +66,15 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
     private _loadSandboxFiles() : SandboxNode[] {
         let nodes: SandboxNode[] = [];
 
-        let files = fs.readdirSync(this.sandboxDir!, { withFileTypes: true });
+        let files = fs.readdirSync(this._sandboxDir!, { withFileTypes: true });
         for (let file of files) {
             if (!file.isFile || !file.name.endsWith(sanboxFileExtension)) {
                 continue;
             }
 
-            let node = new SandboxNode(file.name, path.join(this.sandboxDir!, file.name));
+            let node = new SandboxNode(file.name, path.join(this._sandboxDir!, file.name));
             node.command = {
-                command: `${this.viewId}.item.open`,
+                command: `${this._viewId}.item.open`,
                 title: 'Open On Playground',
                 arguments: [node],
             };

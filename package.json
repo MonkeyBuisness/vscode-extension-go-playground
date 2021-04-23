@@ -11,7 +11,7 @@
 		"Visualization",
 		"Other"
 	],
-	"icon": "images/icon.png",
+	"icon": "resources/icon.png",
 	"activationEvents": [
 		"onCommand:go-playground.play",
 		"onCommand:go-playground.changeSanboxDir",
@@ -33,8 +33,9 @@
 	"keywords": [
 		"go",
 		"golang",
-		"go-playground",
-		"sandbox"
+		"go playground",
+		"sandbox",
+		"playground"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -55,7 +56,7 @@
 		"commands": [
 			{
 				"command": "go-playground.play",
-				"title": "Run Go Playground"
+				"title": "Play Go"
 			},
 			{
 				"command": "go-playground.changeSanboxDir",
@@ -102,12 +103,8 @@
 				}
 			},
 			{
-				"command": "sandboxesView.item.open",
-				"title": "Open On Playground",
-				"icon": {
-					"light": "resources/light/item_open.svg",
-					"dark": "resources/dark/item_open.svg"
-				}
+				"command": "sandbox.item.open",
+				"title": "Open On Playground"
 			},
 			{
 				"command": "sandboxesView.item.delete",
@@ -182,16 +179,11 @@
 					"group": "inline"
 				},
 				{
-					"command": "sandboxesView.item.open",
-					"when": "view == sandboxesView && viewItem == 'sandbox-item'",
-					"group": "inline"
-				},
-				{
 					"command": "sandboxesView.item.delete",
 					"when": "view == sandboxesView && viewItem == 'sandbox-item'"
 				},
 				{
-					"command": "sandboxesView.item.open",
+					"command": "sandbox.item.open",
 					"when": "view == sandboxesView && viewItem == 'sandbox-item'"
 				},
 				{
@@ -230,6 +222,7 @@
 	"dependencies": {
 		"@types/node-fetch": "^2.5.10",
 		"node-fetch": "^2.6.1",
+		"reflect-metadata": "^0.1.13",
 		"tsyringe": "^4.5.0",
 		"uniquefilename": "^1.1.2"
 	}

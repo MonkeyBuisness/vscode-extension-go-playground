@@ -1,23 +1,29 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as Path from 'path';
+import { singleton, inject } from "tsyringe";
 import * as UniqueFileName from 'uniquefilename';
-import { SandboxDataProvider, SandboxNode } from './sandboxDataProvider';
-import { sanboxFileExtension } from './types';
+import * as Path from 'path';
+import * as fs from 'fs';
+import { SandboxDataProvider, SandboxNode } from "../_providers/sanbox-data.provider";
+import { sanboxFileExtension } from '../types';
 
+@singleton()
 export class SandboxView {
-	private _sandboxProvider: SandboxDataProvider;
+    public static readonly viewId: string = 'sandboxesView';
+    private _sandboxProvider: SandboxDataProvider;
 
-	constructor(context: vscode.ExtensionContext, viewId: string, private sandboxDir?: string) {
-		this._sandboxProvider = new SandboxDataProvider(viewId, sandboxDir);
-		vscode.window.registerTreeDataProvider(viewId, this._sandboxProvider);
-		const sandboxView = vscode.window.createTreeView(viewId, {
+	constructor(
+        @inject("ctx") context: vscode.ExtensionContext,
+        @inject("sandboxDir") private _sandboxDir?: string,
+    ){
+		this._sandboxProvider = new SandboxDataProvider(SandboxView.viewId, this._sandboxDir);
+		vscode.window.registerTreeDataProvider(SandboxView.viewId, this._sandboxProvider);
+		const sandboxView = vscode.window.createTreeView(SandboxView.viewId, {
 			treeDataProvider: this._sandboxProvider,
 			showCollapseAll: true,
 		});
-
 		context.subscriptions.push(sandboxView);
-		vscode.commands.registerCommand(`${viewId}.refresh`, () => {
+
+		/*vscode.commands.registerCommand(`${viewId}.refresh`, () => {
 			this._sandboxProvider.refresh();
 		});
 		vscode.commands.registerCommand(`${viewId}.newItem`, async () => {
@@ -38,7 +44,7 @@ export class SandboxView {
 		});
 		vscode.commands.registerCommand(`${viewId}.item.open`, (item: SandboxNode) => {
 			vscode.commands.executeCommand('go-playground.play', item);
-		});
+		});*/
 	}
 
 	async createNewSandbox(content?: string) : Promise<SandboxNode | null> {
@@ -49,7 +55,8 @@ export class SandboxView {
 			return null;
 		}
 
-		let input: string = await UniqueFileName.get(`${this.sandboxDir}${Path.sep}${fileName}${sanboxFileExtension}`, {});
+		let input: string = await UniqueFileName.get(
+            `${this._sandboxDir}${Path.sep}${fileName}${sanboxFileExtension}`, {});
 		fs.writeFileSync(input, content || '');
 	
 		this._sandboxProvider.refresh();
@@ -58,7 +65,7 @@ export class SandboxView {
 	}
 
 	resyncSanboxes(newDir: string) : void {
-		this.sandboxDir = newDir;
+		this._sandboxDir = newDir;
 		this._sandboxProvider.setSandoxDir(newDir);
 		this._sandboxProvider.refresh();
 	}

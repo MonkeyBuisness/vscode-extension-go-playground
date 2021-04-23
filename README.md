@@ -2,6 +2,12 @@
 
 Play with Go in your own Playground.
 
+- [How to install](#installation)
+- [Extension Settings](#extension-settings)
+  - [Commands](#commands-list)
+  - [Keywords](#keywords)
+- [Releases]()
+
 ## Installation
 
 Launch __VS Code__ Quick Open (`Ctrl+P`), paste the following command, and press enter.
@@ -15,7 +21,18 @@ Or follow the [marketplace](https://marketplace.visualstudio.com/items?itemName=
 
 This extension contributes the following settings:
 
-* `go-playground.play`: creates a new sandbox to play
+### Commands List
+
+* `go-playground.play`: activate extension (call the **currently open** .go file to play if provided)
+* `go-playground.changeSanboxDir`: change path of the [sandboxes directory](#keywords)
+
+### Keywords
+
+> **Sandox** - in the current version of the extension, it's just a file with `.go` extension.
+
+> **Sandoxes Directory** - directory that contains the sanbox files (with `.go` extension). Used to store all sandbox files in one place.
+
+
 
 ## Release Notes
 
@@ -27,6 +44,7 @@ This extension contributes the following settings:
 
 - Fixed bug with `undefined` initial value for a new created sandbox
 - Sandbox directory settings are now saved in the `global` target space
+- Added commands description
 
 ### 0.1.0
 

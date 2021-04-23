@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-
-import { ToyDefinition, toyFileExtension } from './types';
+import { ToyDefinition, toyFileExtension } from '../types';
 
 export class ToyDataProvider implements vscode.TreeDataProvider<ToyNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<ToyNode | undefined | void> =
@@ -10,10 +9,7 @@ export class ToyDataProvider implements vscode.TreeDataProvider<ToyNode> {
     readonly onDidChangeTreeData: vscode.Event<ToyNode | undefined | void> =
         this._onDidChangeTreeData.event;
 
-    constructor(
-        private _presetToys: ToyDefinition[],
-        private toysDir?: string,
-    ) {}
+    constructor(private _presetToys: ToyDefinition[]) {}
 
     refresh(): void {
         this._onDidChangeTreeData.fire();
@@ -33,22 +29,6 @@ export class ToyDataProvider implements vscode.TreeDataProvider<ToyNode> {
         // load default toys;
         for (let toy of this._presetToys) {
             nodes.push(new ToyNode(toy.name, true, toy.template || ''));
-        }
-
-        // load users toys.
-        if (this.toysDir) {
-            let files = fs.readdirSync(this.toysDir, { withFileTypes: true });
-            for (let file of files) {
-                if (!file.isFile || !file.name.endsWith(toyFileExtension)) {
-                    continue;
-                }
-                
-                let label: string = path.parse(file.name).name;
-                let fPath: string = path.join(this.toysDir, file.name);
-                let content: string = fs.readFileSync(fPath).toString();
-
-                nodes.push(new ToyNode(label, false, content, fPath));
-            }
         }
 
         return nodes;

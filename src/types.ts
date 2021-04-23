@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
-import { SandboxView } from './sandboxView';
 import { StatusBar } from './statusBar';
-import { ToyView } from './toyView';
 
 export const sanboxFileExtension: string = '.go';
 export const toyFileExtension: string = '.gotoy';
@@ -46,8 +44,8 @@ export interface Playground {
 
 export interface ExtCfg {
     runOutChan: vscode.OutputChannel;
-    sandboxView: SandboxView;
-    toysView: ToyView;
+    //sandboxView: SandboxView;
+    //toysView: ToyView;
     cloudPlayground?: Playground;
     localPlayground?: Playground;
     statusBar?: StatusBar;

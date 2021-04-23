@@ -1,10 +1,9 @@
 'use strict';
 
+import 'reflect-metadata';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-import { SandboxView } from './sandboxView';
-import { SandboxNode } from './sandboxDataProvider';
 import {
     ExecCallback,
     ExtCfg,
@@ -13,7 +12,6 @@ import {
     Playground,
     stdoutKind 
 } from './types';
-import { ToyView } from './toyView';
 
 const sandboxViewId: string = 'sandboxesView';
 const toysViewId: string = 'toysView';
@@ -22,58 +20,54 @@ const goPathEnv: string = "GOPATH";
 import { GoPlaygroundService } from './go-playground.service';
 import { LocalPlaygroundService } from './local-playground.service';
 import { StatusBar } from './statusBar';
+import { CommandService } from './_services/command.service';
+import { PlayCommand } from './_commands/play.command';
+import { ChangeSandboxDirectoryCommand } from './_commands/change-sandbox-dir.command';
+import {container} from "tsyringe";
+import { SandboxView } from './_views/sanbox.view';
+import { ConfigurationService } from './_services/configuration.service';
+import { ToyView } from './_views/toy.view';
 
-import { TestService } from './commands/handler';
+// import { TestService } from './commands/handler';
 
 export function activate(context: vscode.ExtensionContext) {
+    // register views.
+    const cfgService = new ConfigurationService();
+    let sandboxesDir: string | undefined = cfgService.getConfiguration(
+        ConfigurationService.sanboxesDirCfg, '');
+    if (sandboxesDir && sandboxesDir.length && sandboxesDir !== '') {
+        if (!fs.existsSync(sandboxesDir)){
+            fs.mkdirSync(sandboxesDir, { recursive: true });
+        }
+        cfgService.setContextValue(ConfigurationService.sandboxDirSpecifiedCtx, true);
+    } else {
+        sandboxesDir = undefined;
+    }
+    container.register("ctx", { useValue: context });
+    container.register("sandboxDir", { useValue: sandboxesDir });
+    container.resolve(SandboxView);
+    container.resolve(ToyView);
+    
+    // register commands.
+    CommandService.registerCommand(context, CommandService.playCmd, new PlayCommand());
+    CommandService.registerCommand(context, CommandService.changeSandboxDirCmd, new ChangeSandboxDirectoryCommand());
+
+
     /////////////
-    const provider = new ColorsViewProvider(context.extensionUri);
+    /*const provider = new ColorsViewProvider(context.extensionUri);
     context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider(ColorsViewProvider.viewType, provider));
+		vscode.window.registerWebviewViewProvider(ColorsViewProvider.viewType, provider));*/
     //const hh: CommandHandler = new CommandHandler();
-    const h: TestService = new TestService();
-    h.test(context);
+    // const h: TestService = new TestService();
+    // h.test(context);
     /////////////
+
 
 
     // init extension.
     const cfg = initExtension(context);
 
     // register commands.
-    let changeSanboxDirCmd = vscode.commands.registerCommand(`${extName}.changeSanboxDir`, async () => {
-        let fileUri = await vscode.window.showOpenDialog({
-            title: "Select Folder to Store Sanboxes",
-            canSelectFolders: true
-        });
-        if (fileUri && fileUri[0]) {
-            const sBoxesDir = fileUri[0].fsPath;
-            vscode.commands.executeCommand('setContext', `${extName}.sandboxDirSpecified`, true);
-            vscode.workspace.getConfiguration(extName).update('sandboxDir', sBoxesDir, vscode.ConfigurationTarget.Global);
-            cfg.sandboxView.resyncSanboxes(sBoxesDir);
-            cfg.toysView.refresh();
-        }
-    });
-    let playCmd = vscode.commands.registerCommand(`${extName}.play`, async (sandbox : SandboxNode | string | undefined | null) => {
-        let initialContent: string | undefined = undefined;
-        if (typeof sandbox === 'string') {
-            initialContent = sandbox;
-            sandbox = undefined;
-        }
-        
-        if (!sandbox) {
-            sandbox = await cfg.sandboxView.createNewSandbox(initialContent);
-            if (!sandbox) {
-                return;
-            }
-        }
-
-        // read sandbox file.
-        let sandboxData: string = fs.readFileSync(sandbox.filePath).toString();
-
-        // open file to edit.
-        let doc = await vscode.workspace.openTextDocument(sandbox.filePath);
-        vscode.window.showTextDocument(doc);
-    });
     let runSandboxRemotelyCmd = vscode.commands.registerCommand(`${extName}.runRemote`, async () => {
         if (!cfg.cloudPlayground) {
             return;
@@ -145,8 +139,8 @@ export function activate(context: vscode.ExtensionContext) {
         fmtLocally(cfg, editor.document.uri.fsPath);
     });
     context.subscriptions.push(
-        playCmd,
-        changeSanboxDirCmd,
+        //playCmd,
+        //changeSanboxDirCmd,
         runSandboxRemotelyCmd,
         fmtSandboxRemotelyCmd,
         shareSandboxRemotelyCmd,
@@ -189,16 +183,16 @@ function initExtension(context: vscode.ExtensionContext) : ExtCfg {
     }
 
     // create run output channel.
-    let runOutput = vscode.window.createOutputChannel("Go Playground Run");
+    let runOutput = vscode.window.createOutputChannel("Go Playground");
 
     // init views.
-    let sandboxView = new SandboxView(context, sandboxViewId, sandboxesDir);
-    let toysView = new ToyView(context, toysViewId);
+    //let sandboxView = new SandboxView(context, sandboxViewId, sandboxesDir);
+    //let toysView = new ToyView(context, toysViewId);
 
     let cfg: ExtCfg = {
         runOutChan: runOutput,
-        sandboxView: sandboxView,
-        toysView: toysView,
+        //sandboxView: sandboxView,
+        //toysView: toysView,
     };
 
     // init local playground.
