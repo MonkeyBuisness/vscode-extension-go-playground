@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { sanboxFileExtension, extName } from '../types';
+import { ResourceService } from '../_services/resource.service';
+import { CommandService } from '../_services/command.service';
 
 export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<SandboxNode | undefined | void> =
@@ -9,10 +11,7 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
     readonly onDidChangeTreeData: vscode.Event<SandboxNode | undefined | void> =
         this._onDidChangeTreeData.event;
 
-    constructor(
-        private _viewId: string,
-        private _sandboxDir?: string
-    ) {}
+    constructor(private _sandboxDir?: string) {}
 
     refresh(): void {
         this._onDidChangeTreeData.fire();
@@ -51,13 +50,10 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
             contextValue: "sandbox-missing-item",
             fileName: "",
             filePath: "",
-            iconPath: {
-                light: path.join(__filename, '..', '..', 'resources', 'light', 'folder_info.svg'),
-                dark: path.join(__filename, '..', '..', 'resources', 'dark', 'folder_info.svg')
-            },
+            iconPath: ResourceService.iconPath('folder_info.svg'),
             label: "Missing the the sandoxes default folder. Please specify.",
             command: {
-                command: `${extName}.changeSanboxDir`,
+                command: CommandService.prepareCommand(CommandService.changeSandboxDirCmd),
                 title: "Set default sanboxes directory",
             },
         };
@@ -74,9 +70,9 @@ export class SandboxDataProvider implements vscode.TreeDataProvider<SandboxNode>
 
             let node = new SandboxNode(file.name, path.join(this._sandboxDir!, file.name));
             node.command = {
-                command: `${this._viewId}.item.open`,
+                command: CommandService.prepareCommand(CommandService.sandboxOpenItemCmd),
                 title: 'Open On Playground',
-                arguments: [node],
+                arguments: [node.filePath],
             };
             nodes.push(node);
         }
@@ -90,7 +86,7 @@ export class SandboxNode extends vscode.TreeItem {
 	constructor(
         public readonly fileName: string,
 		public readonly filePath: string,
-        public command?: vscode.Command
+        public command?: vscode.Command,
 	) {
 		super(path.parse(fileName).name, vscode.TreeItemCollapsibleState.None);
 
@@ -98,10 +94,7 @@ export class SandboxNode extends vscode.TreeItem {
 		this.description = fs.statSync(filePath).ctime.toLocaleString();
 	}
 
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'sandox.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'sandox.svg')
-	};
+	iconPath = ResourceService.iconPath('sandox.svg');
 
 	contextValue = 'sandbox-item';
 }

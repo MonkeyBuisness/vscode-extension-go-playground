@@ -23,8 +23,10 @@ This extension contributes the following settings:
 
 ### Commands List
 
-* `go-playground.play`: activate extension (call the **currently open** .go file to play if provided)
-* `go-playground.changeSanboxDir`: change path of the [sandboxes directory](#keywords)
+* `go-playground.play`: activates extension (call the **currently open** .go file to play if provided)
+* `go-playground.changeSanboxDir`: changes path of the [sandboxes directory](#keywords)
+* `go-playground.refreshSanboxDir`: refreshes [sandboxes directory](#keywords)
+* `go-playground.newSandbox`: creates new [sandbox](#keywords)
 
 ### Keywords
 

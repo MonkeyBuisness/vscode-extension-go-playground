@@ -15,7 +15,7 @@ export class SandboxView {
         @inject("ctx") context: vscode.ExtensionContext,
         @inject("sandboxDir") private _sandboxDir?: string,
     ){
-		this._sandboxProvider = new SandboxDataProvider(SandboxView.viewId, this._sandboxDir);
+		this._sandboxProvider = new SandboxDataProvider(this._sandboxDir);
 		vscode.window.registerTreeDataProvider(SandboxView.viewId, this._sandboxProvider);
 		const sandboxView = vscode.window.createTreeView(SandboxView.viewId, {
 			treeDataProvider: this._sandboxProvider,
@@ -23,15 +23,7 @@ export class SandboxView {
 		});
 		context.subscriptions.push(sandboxView);
 
-		/*vscode.commands.registerCommand(`${viewId}.refresh`, () => {
-			this._sandboxProvider.refresh();
-		});
-		vscode.commands.registerCommand(`${viewId}.newItem`, async () => {
-			let node = await this.createNewSandbox();
-			if (node) {
-				vscode.commands.executeCommand('go-playground.play', node);
-			}
-		});
+		/*
 		vscode.commands.registerCommand(`${viewId}.item.delete`, (item) => {
 			fs.unlink(item.filePath, (err) => {
 				if (err) {
@@ -41,9 +33,6 @@ export class SandboxView {
 				
 				this._sandboxProvider.refresh();
 			});
-		});
-		vscode.commands.registerCommand(`${viewId}.item.open`, (item: SandboxNode) => {
-			vscode.commands.executeCommand('go-playground.play', item);
 		});*/
 	}
 
@@ -53,6 +42,10 @@ export class SandboxView {
 		});
 		if (!fileName) {
 			return null;
+		}
+
+		if (fileName.endsWith(sanboxFileExtension)) {
+			fileName = fileName.slice(0, fileName.length - sanboxFileExtension.length);
 		}
 
 		let input: string = await UniqueFileName.get(
@@ -67,6 +60,10 @@ export class SandboxView {
 	resyncSanboxes(newDir: string) : void {
 		this._sandboxDir = newDir;
 		this._sandboxProvider.setSandoxDir(newDir);
+		this._sandboxProvider.refresh();
+	}
+
+	refresh() : void {
 		this._sandboxProvider.refresh();
 	}
 }

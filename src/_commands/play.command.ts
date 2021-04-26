@@ -10,6 +10,8 @@ export class PlayCommand implements CommandHandler {
         if (!args || !args.length) {
             const editor = vscode.window.activeTextEditor;
             filePath = editor?.document.uri.fsPath;
+        } else {
+            filePath = args[0];
         }
 
         if (!filePath) {

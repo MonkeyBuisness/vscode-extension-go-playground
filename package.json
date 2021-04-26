@@ -67,6 +67,31 @@
 				}
 			},
 			{
+				"command": "go-playground.refreshSanboxDir",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "go-playground.newSandbox",
+				"title": "Create New Sandbox",
+				"icon": {
+					"light": "resources/light/new_item.svg",
+					"dark": "resources/dark/new_item.svg"
+				}
+			},
+			{
+				"command": "go-playground.sandbox.item-open",
+				"title": "Open On Playground"
+			},
+
+
+
+
+
+			{
 				"command": "go-playground.runRemote",
 				"title": "Run Sandbox Remotely"
 			},
@@ -85,26 +110,6 @@
 			{
 				"command": "go-playground.fmtLocal",
 				"title": "Format Sandbox code Locally"
-			},
-			{
-				"command": "sandboxesView.refresh",
-				"title": "Refresh",
-				"icon": {
-					"light": "resources/light/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
-				}
-			},
-			{
-				"command": "sandboxesView.newItem",
-				"title": "Create New Sandbox",
-				"icon": {
-					"light": "resources/light/new_item.svg",
-					"dark": "resources/dark/new_item.svg"
-				}
-			},
-			{
-				"command": "sandbox.item.open",
-				"title": "Open On Playground"
 			},
 			{
 				"command": "sandboxesView.item.delete",
@@ -152,7 +157,7 @@
 		"menus": {
 			"commandPalette": [
 				{
-					"command": "sandboxesView.refresh"
+					"command": "go-playground.refreshSanboxDir"
 				}
 			],
 			"view/title": [
@@ -162,12 +167,12 @@
 					"group": "navigation"
 				},
 				{
-					"command": "sandboxesView.refresh",
+					"command": "go-playground.refreshSanboxDir",
 					"when": "view == sandboxesView && go-playground.sandboxDirSpecified",
 					"group": "navigation"
 				},
 				{
-					"command": "sandboxesView.newItem",
+					"command": "go-playground.newSandbox",
 					"when": "view == sandboxesView && go-playground.sandboxDirSpecified",
 					"group": "navigation"
 				}
@@ -175,15 +180,10 @@
 			"view/item/context": [
 				{
 					"command": "sandboxesView.item.delete",
-					"when": "view == sandboxesView && viewItem == 'sandbox-item'",
-					"group": "inline"
-				},
-				{
-					"command": "sandboxesView.item.delete",
 					"when": "view == sandboxesView && viewItem == 'sandbox-item'"
 				},
 				{
-					"command": "sandbox.item.open",
+					"command": "go-playground.sandbox.item-open",
 					"when": "view == sandboxesView && viewItem == 'sandbox-item'"
 				},
 				{

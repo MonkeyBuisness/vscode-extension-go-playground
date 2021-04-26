@@ -27,6 +27,9 @@ import {container} from "tsyringe";
 import { SandboxView } from './_views/sanbox.view';
 import { ConfigurationService } from './_services/configuration.service';
 import { ToyView } from './_views/toy.view';
+import { SandboxOpenItemCommand } from './_commands/sandbox-item-open.command';
+import { RefreshSanboxDirCommand } from './_commands/refresh-sandbox-dir.command';
+import { NewSandboxCommand } from './_commands/new-sandbox.command';
 
 // import { TestService } from './commands/handler';
 
@@ -49,9 +52,16 @@ export function activate(context: vscode.ExtensionContext) {
     container.resolve(ToyView);
     
     // register commands.
-    CommandService.registerCommand(context, CommandService.playCmd, new PlayCommand());
-    CommandService.registerCommand(context, CommandService.changeSandboxDirCmd, new ChangeSandboxDirectoryCommand());
-
+    CommandService.registerCommand(
+        context, CommandService.playCmd, new PlayCommand());
+    CommandService.registerCommand(
+        context, CommandService.changeSandboxDirCmd, new ChangeSandboxDirectoryCommand());
+    CommandService.registerCommand(
+        context, CommandService.sandboxOpenItemCmd, new SandboxOpenItemCommand());
+    CommandService.registerCommand(
+        context, CommandService.refreshSandboxDirCmd, new RefreshSanboxDirCommand());
+    CommandService.registerCommand(
+        context, CommandService.newSandboxCmd, new NewSandboxCommand());
 
     /////////////
     /*const provider = new ColorsViewProvider(context.extensionUri);
@@ -139,8 +149,6 @@ export function activate(context: vscode.ExtensionContext) {
         fmtLocally(cfg, editor.document.uri.fsPath);
     });
     context.subscriptions.push(
-        //playCmd,
-        //changeSanboxDirCmd,
         runSandboxRemotelyCmd,
         fmtSandboxRemotelyCmd,
         shareSandboxRemotelyCmd,
