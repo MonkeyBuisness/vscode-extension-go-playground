@@ -4,12 +4,13 @@ import { ConfigurationService } from '../_services/configuration.service';
 import { EnvDefinition } from '../types';
 import { EnvironmentView } from '../_views/environment.view';
 import { EnvNode } from '../_providers/env-data.provider';
+import { StatusBarView } from '../_views/status-bar.view';
 
 @autoInjectable()
 export class DeleteEnvCommand implements CommandHandler {
     constructor(
         private _envView?: EnvironmentView,
-        private _cfgService?: ConfigurationService,
+        private _cfgService?: ConfigurationService
     ) {}
 
     async execute(envNode?: EnvNode) {
@@ -19,8 +20,9 @@ export class DeleteEnvCommand implements CommandHandler {
 
         const envsCfg: EnvDefinition[] = this._cfgService?.getConfiguration(ConfigurationService.envsCfg, []);
         envsCfg.splice(envNode.nodeId - 1, 1);
-        this._cfgService?.setConfiguration(ConfigurationService.envsCfg, envsCfg);
+        await this._cfgService?.setConfiguration(ConfigurationService.envsCfg, envsCfg);
 
         this._envView?.refresh();
+        StatusBarView.refresh();
     }
 }

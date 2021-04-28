@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { StatusBar } from './statusBar';
 
 export const sanboxFileExtension: string = '.go';
 export const toyFileExtension: string = '.gotoy';
@@ -56,7 +55,6 @@ export interface ExtCfg {
     //toysView: ToyView;
     cloudPlayground?: Playground;
     localPlayground?: Playground;
-    statusBar?: StatusBar;
 }
 
 export const presetToyDefinitions: ToyDefinition[] = [

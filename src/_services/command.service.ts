@@ -7,6 +7,7 @@ export interface CommandHandler {
 
 export class CommandService {
     public static readonly playCmd: string = 'play';
+    public static readonly runCmd: string = 'run';
     public static readonly changeSandboxDirCmd: string = 'changeSanboxDir';
     public static readonly refreshSandboxDirCmd: string = 'refreshSanboxDir';
     public static readonly newSandboxCmd: string = 'newSandbox';

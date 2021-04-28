@@ -5,6 +5,7 @@ import { EnvDefinition } from '../types';
 import { EnvironmentView } from '../_views/environment.view';
 import { EnvNode } from '../_providers/env-data.provider';
 import { EditEnvView } from '../_views/edit-env.view';
+import { StatusBarView } from '../_views/status-bar.view';
 
 @autoInjectable()
 export class EditEnvCommand implements CommandHandler {
@@ -27,7 +28,7 @@ export class EditEnvCommand implements CommandHandler {
             showOnStatusBar: envNode.showOnStatusBar,
         });
 
-        editView.onSave((name?: string, command?: string, description?: string, cloudURL?: string, showOnStatusBar?: boolean) => {
+        editView.onSave(async (name?: string, command?: string, description?: string, cloudURL?: string, showOnStatusBar?: boolean) => {
             editView.close();
 
             if (!name) {
@@ -43,8 +44,9 @@ export class EditEnvCommand implements CommandHandler {
                 showOnStatusBar: showOnStatusBar || false,
             };
 
-            this._cfgService?.setConfiguration(ConfigurationService.envsCfg, envsCfg);
+            await this._cfgService?.setConfiguration(ConfigurationService.envsCfg, envsCfg);
             this._envView?.refresh();
+            StatusBarView.refresh();
         });
     }
 }

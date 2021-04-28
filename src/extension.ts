@@ -19,7 +19,6 @@ const goPathEnv: string = "GOPATH";
 
 import { GoPlaygroundService } from './go-playground.service';
 import { LocalPlaygroundService } from './local-playground.service';
-import { StatusBar } from './statusBar';
 import { CommandService } from './_services/command.service';
 import { PlayCommand } from './_commands/play.command';
 import { ChangeSandboxDirectoryCommand } from './_commands/change-sandbox-dir.command';
@@ -39,6 +38,8 @@ import { EnvironmentView } from './_views/environment.view';
 import { NewEnvCommand } from './_commands/new-env.command';
 import { EditEnvCommand } from './_commands/edit-env.command';
 import { DeleteEnvCommand } from './_commands/delete-env.command';
+import { StatusBarView } from './_views/status-bar.view';
+import { RunCommand } from './_commands/run.command';
 
 export function activate(context: vscode.ExtensionContext) {
     // register views.
@@ -57,6 +58,9 @@ export function activate(context: vscode.ExtensionContext) {
     container.resolve(SandboxView);
     container.resolve(ToyView);
     container.resolve(EnvironmentView);
+    StatusBarView.injectCtx(context);
+    StatusBarView.refresh();
+    StatusBarView.hide();
     
     // register commands.
     CommandService.registerCommand(
@@ -85,14 +89,33 @@ export function activate(context: vscode.ExtensionContext) {
         context, CommandService.editEnvCmd, new EditEnvCommand());
     CommandService.registerCommand(
         context, CommandService.deleteEnvCmd, new DeleteEnvCommand());
+    CommandService.registerCommand(
+        context, CommandService.runCmd, new RunCommand());
+
+    // set global listeners.
+    const statusBarVisibilityListener = (doc: vscode.TextDocument) => {
+        if (doc.languageId !== golangLanguageId) {
+            StatusBarView.hide();
+            return;
+        }
+
+        StatusBarView.show();
+    };
+    vscode.workspace.onDidOpenTextDocument(statusBarVisibilityListener);
+    vscode.window.onDidChangeActiveTextEditor((e) => {
+        if (!e) {
+            return;
+        }
+        return statusBarVisibilityListener(e.document);
+    });
 
 
 
     // init extension.
-    const cfg = initExtension(context);
+    //const cfg = initExtension(context);
 
     // register commands.
-    let runSandboxRemotelyCmd = vscode.commands.registerCommand(`${extName}.runRemote`, async () => {
+    /*let runSandboxRemotelyCmd = vscode.commands.registerCommand(`${extName}.runRemote`, async () => {
         if (!cfg.cloudPlayground) {
             return;
         }
@@ -168,28 +191,11 @@ export function activate(context: vscode.ExtensionContext) {
         shareSandboxRemotelyCmd,
         runSandboxLocallyCmd,
         fmtSandboxLocallyCmd
-    );
-
-    // set global listeners.
-    const statusBarVisibilityListener = (doc: vscode.TextDocument) => {
-        if (doc.languageId !== golangLanguageId) {
-            cfg.statusBar?.hide();
-            return;
-        }
-
-        cfg.statusBar?.show();
-    };
-    vscode.workspace.onDidOpenTextDocument(statusBarVisibilityListener);
-    vscode.window.onDidChangeActiveTextEditor((e) => {
-        if (!e) {
-            return;
-        }
-        return statusBarVisibilityListener(e.document);
-    });
+    );*/
 }
 
 export function deactivate() {}
-
+/*
 function initExtension(context: vscode.ExtensionContext) : ExtCfg {
     
 
@@ -315,3 +321,4 @@ async function fmtLocally(cfg: ExtCfg, fPath: string) {
 function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+*/

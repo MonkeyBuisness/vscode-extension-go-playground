@@ -11,8 +11,8 @@ export class ConfigurationService {
         vscode.commands.executeCommand('setContext', `${extName}.${contextName}`, value);
     }
 
-    setConfiguration(cfgName: string, value: any) {
-        vscode.workspace.getConfiguration(extName).update(cfgName, value, vscode.ConfigurationTarget.Global);
+    async setConfiguration(cfgName: string, value: any) {
+        return vscode.workspace.getConfiguration(extName).update(cfgName, value, vscode.ConfigurationTarget.Global);
     }
 
     getConfiguration(cfgName: string, defaultValue?: any) : any {

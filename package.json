@@ -118,6 +118,10 @@
 				"title": "Play Go"
 			},
 			{
+				"command": "go-playground.run",
+				"title": "Run Go On Playground"
+			},
+			{
 				"command": "go-playground.changeSanboxDir",
 				"title": "Change Sandoxes Directory",
 				"icon": {
@@ -188,29 +192,6 @@
 			{
 				"command": "go-playground.envs.delete",
 				"title": "Delete Environment"
-			},
-
-
-
-			{
-				"command": "go-playground.runRemote",
-				"title": "Run Sandbox Remotely"
-			},
-			{
-				"command": "go-playground.fmtRemote",
-				"title": "Format Sandbox code Remotely"
-			},
-			{
-				"command": "go-playground.share",
-				"title": "Share your Sandbox code"
-			},
-			{
-				"command": "go-playground.runLocal",
-				"title": "Run Sandbox Locally"
-			},
-			{
-				"command": "go-playground.fmtLocal",
-				"title": "Format Sandbox code Locally"
 			}
 		],
 		"viewsContainers": {
