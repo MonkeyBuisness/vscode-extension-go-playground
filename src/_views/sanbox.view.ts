@@ -22,18 +22,6 @@ export class SandboxView {
 			showCollapseAll: true,
 		});
 		context.subscriptions.push(sandboxView);
-
-		/*
-		vscode.commands.registerCommand(`${viewId}.item.delete`, (item) => {
-			fs.unlink(item.filePath, (err) => {
-				if (err) {
-					vscode.window.showErrorMessage(`Could not delete ${item.filePath}: ${err}`);
-					return;
-				}
-				
-				this._sandboxProvider.refresh();
-			});
-		});*/
 	}
 
 	async createNewSandbox(content?: string) : Promise<SandboxNode | null> {

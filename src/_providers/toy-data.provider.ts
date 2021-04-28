@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
-import { ToyDefinition, toyFileExtension } from '../types';
+import { ToyDefinition } from '../types';
+import { ResourceService } from '../_services/resource.service';
 
 export class ToyDataProvider implements vscode.TreeDataProvider<ToyNode> {
     private _onDidChangeTreeData: vscode.EventEmitter<ToyNode | undefined | void> =
@@ -26,7 +25,7 @@ export class ToyDataProvider implements vscode.TreeDataProvider<ToyNode> {
     private _loadToys() : ToyNode[] {
         let nodes: ToyNode[] = [];
 
-        // load default toys;
+        // load default toys.
         for (let toy of this._presetToys) {
             nodes.push(new ToyNode(toy.name, true, toy.template || ''));
         }
@@ -49,10 +48,7 @@ export class ToyNode extends vscode.TreeItem {
 
 		this.tooltip = this.template;
         this.contextValue = 'toy';
-        let icon: string = this.isPresetable ? 'default_toy.svg' : 'user_toy.svg';
-        this.iconPath = {
-            light: path.join(__filename, '..', '..', 'resources', 'light', icon),
-		    dark: path.join(__filename, '..', '..', 'resources', 'dark', icon)
-        };
+        const icon: string = this.isPresetable ? 'default_toy.svg' : 'user_toy.svg';
+        this.iconPath = ResourceService.iconPath(icon);
 	}
 }

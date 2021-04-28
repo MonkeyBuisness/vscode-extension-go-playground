@@ -30,24 +30,25 @@ import { ToyView } from './_views/toy.view';
 import { SandboxOpenItemCommand } from './_commands/sandbox-item-open.command';
 import { RefreshSanboxDirCommand } from './_commands/refresh-sandbox-dir.command';
 import { NewSandboxCommand } from './_commands/new-sandbox.command';
+import { SandboxDeleteItemCommand } from './_commands/sandbox-item-delete.command';
+import { PlayToyCommand } from './_commands/play-toy.command';
 
 // import { TestService } from './commands/handler';
 
 export function activate(context: vscode.ExtensionContext) {
     // register views.
     const cfgService = new ConfigurationService();
-    let sandboxesDir: string | undefined = cfgService.getConfiguration(
-        ConfigurationService.sanboxesDirCfg, '');
-    if (sandboxesDir && sandboxesDir.length && sandboxesDir !== '') {
+    cfgService.setContextValue(ConfigurationService.sandboxDirSpecifiedCtx, false);
+    const sandboxesDir: string | undefined = cfgService.getConfiguration(
+        ConfigurationService.sanboxesDirCfg, undefined);
+    if (sandboxesDir) {
         if (!fs.existsSync(sandboxesDir)){
             fs.mkdirSync(sandboxesDir, { recursive: true });
         }
         cfgService.setContextValue(ConfigurationService.sandboxDirSpecifiedCtx, true);
-    } else {
-        sandboxesDir = undefined;
     }
     container.register("ctx", { useValue: context });
-    container.register("sandboxDir", { useValue: sandboxesDir });
+    container.register("sandboxDir", { useValue: sandboxesDir || '' });
     container.resolve(SandboxView);
     container.resolve(ToyView);
     
@@ -62,6 +63,10 @@ export function activate(context: vscode.ExtensionContext) {
         context, CommandService.refreshSandboxDirCmd, new RefreshSanboxDirCommand());
     CommandService.registerCommand(
         context, CommandService.newSandboxCmd, new NewSandboxCommand());
+    CommandService.registerCommand(
+        context, CommandService.sandboxDeleteItemCmd, new SandboxDeleteItemCommand());
+    CommandService.registerCommand(
+        context, CommandService.playToyCmd, new PlayToyCommand());
 
     /////////////
     /*const provider = new ColorsViewProvider(context.extensionUri);
@@ -177,18 +182,7 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {}
 
 function initExtension(context: vscode.ExtensionContext) : ExtCfg {
-    // init path to the sandboxes dir.
-    let sandboxesDir: string | undefined = vscode.workspace.
-        getConfiguration(extName).
-        get('sandboxDir') || '';
-    if (sandboxesDir.length && sandboxesDir !== '') {
-        if (!fs.existsSync(sandboxesDir)){
-            fs.mkdirSync(sandboxesDir, { recursive: true });
-        }
-        vscode.commands.executeCommand('setContext', `${extName}.sandboxDirSpecified`, true);
-    } else {
-        sandboxesDir = undefined;
-    }
+    
 
     // create run output channel.
     let runOutput = vscode.window.createOutputChannel("Go Playground");

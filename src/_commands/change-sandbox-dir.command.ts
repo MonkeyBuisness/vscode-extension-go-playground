@@ -17,13 +17,13 @@ export class ChangeSandboxDirectoryCommand implements CommandHandler {
     async execute() {
         const fileUri = await vscode.window.showOpenDialog({
             title: "Select Folder to Store Sanboxes",
-            canSelectFolders: true
+            canSelectFolders: true,
         });
 
         if (fileUri && fileUri[0]) {
             const sBoxesDir = fileUri[0].fsPath;
-            this._cfgService?.setContextValue(ConfigurationService.sandboxDirSpecifiedCtx, true);
             this._cfgService?.setConfiguration(ConfigurationService.sanboxesDirCfg, sBoxesDir);
+            this._cfgService?.setContextValue(ConfigurationService.sandboxDirSpecifiedCtx, true);
             this._sandboxView?.resyncSanboxes(sBoxesDir);
             this._toyView?.refresh();
         }

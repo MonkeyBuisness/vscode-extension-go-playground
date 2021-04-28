@@ -11,6 +11,8 @@ export class CommandService {
     public static readonly refreshSandboxDirCmd: string = 'refreshSanboxDir';
     public static readonly newSandboxCmd: string = 'newSandbox';
     public static readonly sandboxOpenItemCmd: string = 'sandbox.item-open';
+    public static readonly sandboxDeleteItemCmd: string = 'sandbox.item-delete';
+    public static readonly playToyCmd: string = 'toys.play';
 
     public static registerCommand(context: vscode.ExtensionContext, command: string, callback: CommandHandler) : void {
         const cmd = vscode.commands.registerCommand(`${extName}.${command}`,

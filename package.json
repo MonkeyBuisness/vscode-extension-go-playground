@@ -86,6 +86,18 @@
 				"command": "go-playground.sandbox.item-open",
 				"title": "Open On Playground"
 			},
+			{
+				"command": "go-playground.sandbox.item-delete",
+				"title": "Delete sandbox"
+			},
+			{
+				"command": "go-playground.toys.play",
+				"title": "Create New Sandbox with Selected Toy",
+				"icon": {
+					"light": "resources/light/play_toy.svg",
+					"dark": "resources/dark/play_toy.svg"
+				}
+			},
 
 
 
@@ -110,22 +122,6 @@
 			{
 				"command": "go-playground.fmtLocal",
 				"title": "Format Sandbox code Locally"
-			},
-			{
-				"command": "sandboxesView.item.delete",
-				"title": "Delete sandbox",
-				"icon": {
-					"light": "resources/light/item_delete.svg",
-					"dark": "resources/dark/item_delete.svg"
-				}
-			},
-			{
-				"command": "toysView.playToy",
-				"title": "Create New Sandbox with Selected Toy",
-				"icon": {
-					"light": "resources/light/play_toy.svg",
-					"dark": "resources/dark/play_toy.svg"
-				}
 			}
 		],
 		"viewsContainers": {
@@ -179,7 +175,7 @@
 			],
 			"view/item/context": [
 				{
-					"command": "sandboxesView.item.delete",
+					"command": "go-playground.sandbox.item-delete",
 					"when": "view == sandboxesView && viewItem == 'sandbox-item'"
 				},
 				{
@@ -187,12 +183,12 @@
 					"when": "view == sandboxesView && viewItem == 'sandbox-item'"
 				},
 				{
-					"command": "toysView.playToy",
+					"command": "go-playground.toys.play",
 					"when": "view == toysView && viewItem == 'toy' && go-playground.sandboxDirSpecified",
 					"group": "inline"
 				},
 				{
-					"command": "toysView.playToy",
+					"command": "go-playground.toys.play",
 					"when": "view == toysView && viewItem == 'toy' && go-playground.sandboxDirSpecified"
 				}
 			]

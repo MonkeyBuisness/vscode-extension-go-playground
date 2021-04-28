@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { singleton, inject } from "tsyringe";
 import { presetToyDefinitions } from '../types';
-import { ToyDataProvider, ToyNode } from '../_providers/toy-data.provider';
+import { ToyDataProvider } from '../_providers/toy-data.provider';
 
 @singleton()
 export class ToyView {
@@ -16,10 +16,6 @@ export class ToyView {
 			showCollapseAll: true,
 		});
 		context.subscriptions.push(toysView);
-
-		/*vscode.commands.registerCommand(`${ToyView.viewId}.playToy`, (item: ToyNode) => {
-			vscode.commands.executeCommand('go-playground.play', item.template);
-		});*/
 	}
 
 	refresh() {
