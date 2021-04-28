@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Environment definition</title>
+
+        <style></style>
+    </head>
+
+    <body>
+        <label for="env-name">Environment name:</label>
+        <input
+            id="env-name"
+            oninput="checkBtnEnabled()"
+            placeholder="Env name" />
+
+        <br />
+
+        <label for="env-is-local">Is Local Environment</label>
+        <input
+            id="env-is-local"
+            checked
+            onchange="toggleEnv()"
+            type="checkbox" />
+
+        <br />
+        <br />
+
+        <label id="label-env-cmd" for="env-cmd">Environment command:</label>
+        <input
+            id="env-cmd"
+            oninput="checkBtnEnabled()"
+            placeholder="go run ${sandbox} >> out.txt" />
+
+        <label id="label-env-cloud" for="env-cloud" class="hidden">Environment Cloud URL:</label>
+        <input
+            id="env-cloud"
+            oninput="checkBtnEnabled()"
+            placeholder="https://play.golang.org" />
+
+        <br />
+
+        <label for="env-desc">Environment description:</label>
+        <textarea
+            id="env-desc"
+            oninput="checkBtnEnabled()"
+            placeholder="Description"
+            rows="4"></textarea>
+
+        <br />
+
+        <button
+            disabled
+            id="save-btn"
+            onclick="saveChanges()"
+            class="save-env-button">
+            Save Changes
+        </button>
+
+        <script>
+            const vscode = acquireVsCodeApi();
+            const saveBtn = document.getElementById('save-btn');
+            const envName = document.getElementById('env-name');
+            const envCmd = document.getElementById('env-cmd');
+            const envDesc = document.getElementById('env-desc');
+            const envCloud = document.getElementById('env-cloud');
+            const envLabelCloud = document.getElementById('label-env-cloud');
+            const envLabelCmd = document.getElementById('label-env-cmd');
+            let isLocalEnv = true;
+
+            window.addEventListener('message', event => {
+                const message = event.data;
+                envName.value = message['name'] || '';
+                envCmd.value = message['command'] || '';
+                envDesc.value = message['description'] || '';
+                envCloud.value = message['cloudURL'] || '';
+
+                if (envCloud.value) {
+                    toggleEnv();
+                }
+
+                checkBtnEnabled();
+            });
+
+            const checkBtnEnabled = () => {
+                saveBtn.disabled = !(envName.value && (isLocalEnv ? envCmd.value : envCloud.value));
+            };
+
+            const saveChanges = () => vscode.postMessage({
+                name: envName.value,
+                command: isLocalEnv ? envCmd.value : undefined,
+                description: envDesc.value,
+                cloudURL: isLocalEnv ? undefined : envCloud.value,
+            });
+
+            const toggleEnv = () => {
+                isLocalEnv = !isLocalEnv;
+
+                if (isLocalEnv) {
+                    envLabelCloud.classList.add('hidden');
+                    envLabelCmd.classList.remove('hidden');
+                } else {
+                    envLabelCmd.classList.add('hidden');
+                    envLabelCloud.classList.remove('hidden');
+                }
+
+                checkBtnEnabled();
+            };
+
+            checkBtnEnabled();
+        </script>
+    </body>
+</html>

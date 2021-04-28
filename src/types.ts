@@ -12,6 +12,13 @@ export interface ToyDefinition {
     template?: string;
 };
 
+export interface EnvDefinition {
+    name: string;
+    command?: string;
+    description?: string;
+    cloudURL?: string; 
+};
+
 export interface PlaygroundCompileResponse {
     Errors?: string;
     Events?: PlaygroundEvent[];
@@ -225,4 +232,12 @@ func main() {
 
 `
     }
+];
+
+export const presetEnvDefinitions: EnvDefinition[] = [
+    {
+        name: 'go run',
+        command: 'go run ${sandbox}',
+        description: 'Go Run Locally',
+    },
 ];

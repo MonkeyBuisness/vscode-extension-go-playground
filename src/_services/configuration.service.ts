@@ -5,6 +5,7 @@ export class ConfigurationService {
     public static readonly sanboxesDirCfg: string = 'sandboxDir';
     public static readonly sandboxDirSpecifiedCtx: string = 'sandboxDirSpecified';
     public static readonly toysCfg: string = 'toys';
+    public static readonly envsCfg: string = 'envs';
 
     setContextValue(contextName: string, value: any) {
         vscode.commands.executeCommand('setContext', `${extName}.${contextName}`, value);

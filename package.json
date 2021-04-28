@@ -16,7 +16,8 @@
 		"onCommand:go-playground.play",
 		"onCommand:go-playground.changeSanboxDir",
 		"onView:sandboxesView",
-		"onView:toysView"
+		"onView:toysView",
+		"onView:envsView"
 	],
 	"bugs": {
 		"email": "gutorov.artem@ayndex.ru",
@@ -71,6 +72,37 @@
 					},
 					"default": [],
 					"description": "Specifies the list of the custom toys"
+				},
+				"go-playground.envs": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"title": "Environment definition",
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Environment name",
+								"required": true
+							},
+							"command": {
+								"type": "string",
+								"description": "Environment command. You can use the ${sandbox} alias for the currently open sandbox file to define the command",
+								"required": true
+							},
+							"description": {
+								"type": "string",
+								"description": "Environment description",
+								"required": false
+							},
+							"cloudURL": {
+								"type": "string",
+								"description": "Cloud URL Environment. If this field is set, the \"command\" field will be ignored",
+								"required": true
+							}
+						}
+					},
+					"default": [],
+					"description": "Specifies the Go Playground environments"
 				}
 			}
 		},
@@ -112,6 +144,14 @@
 				}
 			},
 			{
+				"command": "go-playground.newEnv",
+				"title": "Create New Environment",
+				"icon": {
+					"light": "resources/icons/light/add_env.svg",
+					"dark": "resources/icons/dark/add_env.svg"
+				}
+			},
+			{
 				"command": "go-playground.sandbox.item-open",
 				"title": "Open On Playground"
 			},
@@ -134,6 +174,10 @@
 			{
 				"command": "go-playground.toys.edit",
 				"title": "Edit Toy"
+			},
+			{
+				"command": "go-playground.envs.edit",
+				"title": "Edit Environment"
 			},
 
 
@@ -172,9 +216,8 @@
 		"views": {
 			"go-playground": [
 				{
-					"id": "envView",
-					"type": "webview",
-					"name": "Environment"
+					"id": "envsView",
+					"name": "Environments"
 				},
 				{
 					"id": "toysView",
@@ -215,6 +258,11 @@
 					"command": "go-playground.newToy",
 					"when": "view == toysView",
 					"group": "navigation"
+				},
+				{
+					"command": "go-playground.newEnv",
+					"when": "view == envsView",
+					"group": "navigation"
 				}
 			],
 			"view/item/context": [
@@ -251,6 +299,10 @@
 				{
 					"command": "go-playground.toys.edit",
 					"when": "view == toysView && viewItem == 'user-toy'"
+				},
+				{
+					"command": "go-playground.envs.edit",
+					"when": "view == envsView && viewItem == 'env-item'"
 				}
 			]
 		}
