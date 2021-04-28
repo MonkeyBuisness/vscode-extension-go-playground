@@ -50,6 +50,11 @@
 					"type": "string",
 					"default": "https://play.golang.org",
 					"description": "Specifies the URL of the cloud Go Playground"
+				},
+				"go-playground.toys": {
+					"type": "array",
+					"default": [],
+					"description": "Specifies the list of the custom toys"
 				}
 			}
 		},
@@ -62,24 +67,32 @@
 				"command": "go-playground.changeSanboxDir",
 				"title": "Change Sandoxes Directory",
 				"icon": {
-					"light": "resources/light/folder_cog.svg",
-					"dark": "resources/dark/folder_cog.svg"
+					"light": "resources/icons/light/folder_cog.svg",
+					"dark": "resources/icons/dark/folder_cog.svg"
 				}
 			},
 			{
 				"command": "go-playground.refreshSanboxDir",
 				"title": "Refresh",
 				"icon": {
-					"light": "resources/light/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
+					"light": "resources/icons/light/refresh.svg",
+					"dark": "resources/icons/dark/refresh.svg"
 				}
 			},
 			{
 				"command": "go-playground.newSandbox",
 				"title": "Create New Sandbox",
 				"icon": {
-					"light": "resources/light/new_item.svg",
-					"dark": "resources/dark/new_item.svg"
+					"light": "resources/icons/light/new_item.svg",
+					"dark": "resources/icons/dark/new_item.svg"
+				}
+			},
+			{
+				"command": "go-playground.newToy",
+				"title": "Create New Toy",
+				"icon": {
+					"light": "resources/icons/light/new_item.svg",
+					"dark": "resources/icons/dark/new_item.svg"
 				}
 			},
 			{
@@ -94,8 +107,8 @@
 				"command": "go-playground.toys.play",
 				"title": "Create New Sandbox with Selected Toy",
 				"icon": {
-					"light": "resources/light/play_toy.svg",
-					"dark": "resources/dark/play_toy.svg"
+					"light": "resources/icons/light/play_toy.svg",
+					"dark": "resources/icons/dark/play_toy.svg"
 				}
 			},
 
@@ -154,6 +167,9 @@
 			"commandPalette": [
 				{
 					"command": "go-playground.refreshSanboxDir"
+				},
+				{
+					"command": "go-playground.newToy"
 				}
 			],
 			"view/title": [
@@ -170,6 +186,11 @@
 				{
 					"command": "go-playground.newSandbox",
 					"when": "view == sandboxesView && go-playground.sandboxDirSpecified",
+					"group": "navigation"
+				},
+				{
+					"command": "go-playground.newToy",
+					"when": "view == toysView",
 					"group": "navigation"
 				}
 			],

@@ -32,6 +32,7 @@ import { RefreshSanboxDirCommand } from './_commands/refresh-sandbox-dir.command
 import { NewSandboxCommand } from './_commands/new-sandbox.command';
 import { SandboxDeleteItemCommand } from './_commands/sandbox-item-delete.command';
 import { PlayToyCommand } from './_commands/play-toy.command';
+import { NewToyCommand } from './_commands/new-toy.command';
 
 // import { TestService } from './commands/handler';
 
@@ -67,15 +68,19 @@ export function activate(context: vscode.ExtensionContext) {
         context, CommandService.sandboxDeleteItemCmd, new SandboxDeleteItemCommand());
     CommandService.registerCommand(
         context, CommandService.playToyCmd, new PlayToyCommand());
+    CommandService.registerCommand(
+        context, CommandService.newToyCmd, new NewToyCommand());
 
     /////////////
     /*const provider = new ColorsViewProvider(context.extensionUri);
     context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(ColorsViewProvider.viewType, provider));*/
-    //const hh: CommandHandler = new CommandHandler();
-    // const h: TestService = new TestService();
-    // h.test(context);
     /////////////
+
+   
+
+    //const provider = new ColorsViewProvider(context.extensionUri);
+    //vscode.window.registerWebviewViewProvider('envView', provider);    
 
 
 

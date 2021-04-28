@@ -10,6 +10,7 @@ export class CommandService {
     public static readonly changeSandboxDirCmd: string = 'changeSanboxDir';
     public static readonly refreshSandboxDirCmd: string = 'refreshSanboxDir';
     public static readonly newSandboxCmd: string = 'newSandbox';
+    public static readonly newToyCmd: string = 'newToy';
     public static readonly sandboxOpenItemCmd: string = 'sandbox.item-open';
     public static readonly sandboxDeleteItemCmd: string = 'sandbox.item-delete';
     public static readonly playToyCmd: string = 'toys.play';

@@ -27,6 +27,7 @@ This extension contributes the following settings:
 * `go-playground.changeSanboxDir`: changes path of the [sandboxes directory](#keywords)
 * `go-playground.refreshSanboxDir`: refreshes [sandboxes directory](#keywords)
 * `go-playground.newSandbox`: creates new [sandbox](#keywords)
+* `go-playground.newToy`: creates new [toy](#keywords)
 
 ### Keywords
 
@@ -34,7 +35,7 @@ This extension contributes the following settings:
 
 > **Sandoxes Directory** - directory that contains the sanbox files (with `.go` extension). Used to store all sandbox files in one place.
 
-
+> **Toy** - predefined `go`-code to play with.
 
 ## Release Notes
 
