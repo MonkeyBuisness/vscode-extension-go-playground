@@ -53,6 +53,22 @@
 				},
 				"go-playground.toys": {
 					"type": "array",
+					"items": {
+						"type": "object",
+						"title": "Toy definition",
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Toy's name",
+								"required": true
+							},
+							"template": {
+								"type": "string",
+								"description": "Toy's template (golang code)",
+								"required": true
+							}
+						}
+					},
 					"default": [],
 					"description": "Specifies the list of the custom toys"
 				}
@@ -91,8 +107,8 @@
 				"command": "go-playground.newToy",
 				"title": "Create New Toy",
 				"icon": {
-					"light": "resources/icons/light/new_item.svg",
-					"dark": "resources/icons/dark/new_item.svg"
+					"light": "resources/icons/light/add_toy.svg",
+					"dark": "resources/icons/dark/add_toy.svg"
 				}
 			},
 			{
@@ -101,7 +117,7 @@
 			},
 			{
 				"command": "go-playground.sandbox.item-delete",
-				"title": "Delete sandbox"
+				"title": "Delete Sandbox"
 			},
 			{
 				"command": "go-playground.toys.play",
@@ -111,7 +127,14 @@
 					"dark": "resources/icons/dark/play_toy.svg"
 				}
 			},
-
+			{
+				"command": "go-playground.toys.delete",
+				"title": "Delete Toy"
+			},
+			{
+				"command": "go-playground.toys.edit",
+				"title": "Edit Toy"
+			},
 
 
 
@@ -211,6 +234,23 @@
 				{
 					"command": "go-playground.toys.play",
 					"when": "view == toysView && viewItem == 'toy' && go-playground.sandboxDirSpecified"
+				},
+				{
+					"command": "go-playground.toys.play",
+					"when": "view == toysView && viewItem == 'user-toy' && go-playground.sandboxDirSpecified",
+					"group": "inline"
+				},
+				{
+					"command": "go-playground.toys.play",
+					"when": "view == toysView && viewItem == 'user-toy' && go-playground.sandboxDirSpecified"
+				},
+				{
+					"command": "go-playground.toys.delete",
+					"when": "view == toysView && viewItem == 'user-toy'"
+				},
+				{
+					"command": "go-playground.toys.edit",
+					"when": "view == toysView && viewItem == 'user-toy'"
 				}
 			]
 		}

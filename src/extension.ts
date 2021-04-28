@@ -33,6 +33,8 @@ import { NewSandboxCommand } from './_commands/new-sandbox.command';
 import { SandboxDeleteItemCommand } from './_commands/sandbox-item-delete.command';
 import { PlayToyCommand } from './_commands/play-toy.command';
 import { NewToyCommand } from './_commands/new-toy.command';
+import { DeleteToyCommand } from './_commands/delete-toy.command';
+import { EditToyCommand } from './_commands/edit-toy.command';
 
 // import { TestService } from './commands/handler';
 
@@ -70,6 +72,10 @@ export function activate(context: vscode.ExtensionContext) {
         context, CommandService.playToyCmd, new PlayToyCommand());
     CommandService.registerCommand(
         context, CommandService.newToyCmd, new NewToyCommand());
+    CommandService.registerCommand(
+        context, CommandService.deleteToyCmd, new DeleteToyCommand());
+    CommandService.registerCommand(
+        context, CommandService.editToyCmd, new EditToyCommand());
 
     /////////////
     /*const provider = new ColorsViewProvider(context.extensionUri);
