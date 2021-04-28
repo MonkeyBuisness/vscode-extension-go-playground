@@ -86,7 +86,7 @@
 							},
 							"command": {
 								"type": "string",
-								"description": "Environment command. You can use the ${sandbox} alias for the currently open sandbox file to define the command",
+								"description": "Environment command. You can use the ${{sandbox}} alias for the currently open sandbox file to define the command",
 								"required": true
 							},
 							"description": {
@@ -98,6 +98,12 @@
 								"type": "string",
 								"description": "Cloud URL Environment. If this field is set, the \"command\" field will be ignored",
 								"required": true
+							},
+							"showOnStatusBar": {
+								"type": "boolean",
+								"description": "Display this environment on Status Bar for the quick access",
+								"required": true,
+								"default": false
 							}
 						}
 					},
@@ -179,7 +185,10 @@
 				"command": "go-playground.envs.edit",
 				"title": "Edit Environment"
 			},
-
+			{
+				"command": "go-playground.envs.delete",
+				"title": "Delete Environment"
+			},
 
 
 
@@ -302,6 +311,10 @@
 				},
 				{
 					"command": "go-playground.envs.edit",
+					"when": "view == envsView && viewItem == 'env-item'"
+				},
+				{
+					"command": "go-playground.envs.delete",
 					"when": "view == envsView && viewItem == 'env-item'"
 				}
 			]

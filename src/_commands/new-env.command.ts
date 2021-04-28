@@ -16,7 +16,7 @@ export class NewEnvCommand implements CommandHandler {
         const editView = new EditEnvView();
         editView.show();
 
-        editView.onSave((name?: string, command?: string, description?: string, cloudURL?: string) => {
+        editView.onSave((name?: string, command?: string, description?: string, cloudURL?: string, showOnStatusBar?: boolean) => {
             editView.close();
 
             if (!name) {
@@ -29,6 +29,7 @@ export class NewEnvCommand implements CommandHandler {
                 cloudURL: cloudURL,
                 command: command,
                 description: description,
+                showOnStatusBar: showOnStatusBar || false,
             });
             this._cfgService?.setConfiguration(ConfigurationService.envsCfg, envsCfg);
 

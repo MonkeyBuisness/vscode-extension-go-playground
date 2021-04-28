@@ -38,7 +38,8 @@ export class EnvDataProvider implements vscode.TreeDataProvider<EnvNode> {
 
         for (let i = 0; i < envs.length; i++) {
             const env = envs[i];
-            const node = new EnvNode(env.name, env.command, env.description, env.cloudURL);
+            const node = new EnvNode(
+                env.name, env.showOnStatusBar, env.command, env.description, env.cloudURL);
             node.nodeId = i + 1;
 
             node.command = {
@@ -59,6 +60,7 @@ export class EnvNode extends vscode.TreeItem {
 
 	constructor(
         public readonly name: string,
+        public readonly showOnStatusBar: boolean,
 		public readonly cmd?: string,
 		public readonly description?: string,
 		public readonly cloudURL?: string,

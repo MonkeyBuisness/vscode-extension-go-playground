@@ -18,6 +18,7 @@ export class CommandService {
     public static readonly deleteToyCmd: string = 'toys.delete';
     public static readonly editToyCmd: string = 'toys.edit';
     public static readonly editEnvCmd: string = 'envs.edit';
+    public static readonly deleteEnvCmd: string = 'envs.delete';
 
     public static registerCommand(context: vscode.ExtensionContext, command: string, callback: CommandHandler) : void {
         const cmd = vscode.commands.registerCommand(`${extName}.${command}`,

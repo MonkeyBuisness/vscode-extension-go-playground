@@ -28,8 +28,14 @@ This extension contributes the following settings:
 * `go-playground.refreshSanboxDir`: refreshes [sandboxes directory](#keywords)
 * `go-playground.newSandbox`: creates new [sandbox](#keywords)
 * `go-playground.newToy`: creates new [toy](#keywords)
+* `go-playground.newEnv`: creates new [environment](#keywords)
 
 ### Keywords
+
+> **Environment** - the command (or list of commands) to launch the sandbox. May contain any OS-specific directives.
+```bash
+example> go run main.go 
+```
 
 > **Sandox** - in the current version of the extension, it's just a file with `.go` extension.
 
@@ -39,9 +45,17 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-### 0.0.1
+### 0.2.0
 
-- Initial release
+- Added `Environments` view.
+- Added possibility to define `custom` toys.
+- Fixed bugs.
+
+### 0.1.0
+
+- Fixed bug with `undefined` file name for a new created sandbox
+- Added extension icon
+- Added async output for local runned sandboxes
 
 ### 0.0.2
 
@@ -49,8 +63,6 @@ This extension contributes the following settings:
 - Sandbox directory settings are now saved in the `global` target space
 - Added commands description
 
-### 0.1.0
+### 0.0.1
 
-- Fixed bug with `undefined` file name for a new created sandbox
-- Added extension icon
-- Added async output for local runned sandboxes
+- Initial release

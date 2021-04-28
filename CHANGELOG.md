@@ -14,4 +14,6 @@
 
 ## [0.2.0]
 
-- Add oportunity to run tests files locally from sandbox (`_test.go` suffix in filename is required) 
+- Added `Environments` view.
+- Added possibility to define `custom` toys.
+- Fixed bugs.

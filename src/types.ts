@@ -16,7 +16,8 @@ export interface EnvDefinition {
     name: string;
     command?: string;
     description?: string;
-    cloudURL?: string; 
+    cloudURL?: string;
+    showOnStatusBar: boolean;
 };
 
 export interface PlaygroundCompileResponse {
@@ -236,8 +237,34 @@ func main() {
 
 export const presetEnvDefinitions: EnvDefinition[] = [
     {
-        name: 'go run',
-        command: 'go run ${sandbox}',
-        description: 'Go Run Locally',
+        name: 'Remote Run',
+        description: 'Launch GO On https://play.golang.org',
+        cloudURL: 'https://play.golang.org',
+        showOnStatusBar: true
+    },
+    {
+        name: 'Local Run',
+        command: 'go run ${{sandbox}}',
+        description: 'Run GO Locally',
+        showOnStatusBar: true
+    },
+    {
+        name: 'Format (local)',
+        command: 'go fmt ${{sandbox}}',
+        description: 'GO Format Locally',
+        showOnStatusBar: true
+    },
+    {
+        name: 'Test (local)',
+        command: 'go test -v ${{sandbox}}',
+        description: 'Run GO Test Locally',
+        showOnStatusBar: false
+    },
+    {
+        name: 'Share',
+        cloudURL: 'https://play.golang.org',
+        command: '%share%',
+        description: 'Share GO Code',
+        showOnStatusBar: true
     },
 ];

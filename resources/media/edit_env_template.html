@@ -31,7 +31,7 @@
         <input
             id="env-cmd"
             oninput="checkBtnEnabled()"
-            placeholder="go run ${sandbox} >> out.txt" />
+            placeholder="go run ${{sandbox}} >> out.txt" />
 
         <label id="label-env-cloud" for="env-cloud" class="hidden">Environment Cloud URL:</label>
         <input
@@ -48,6 +48,15 @@
             placeholder="Description"
             rows="4"></textarea>
 
+        <br />
+
+        <label for="env-show-on-status-bar">Show on Status Bar</label>
+        <input
+            id="env-show-on-status-bar"
+            onchange="setShowOnStatusBar(event.target.value)"
+            type="checkbox" />
+
+        <br />
         <br />
 
         <button
@@ -67,7 +76,10 @@
             const envCloud = document.getElementById('env-cloud');
             const envLabelCloud = document.getElementById('label-env-cloud');
             const envLabelCmd = document.getElementById('label-env-cmd');
+            const envShowOnStatusBar = document.getElementById('env-show-on-status-bar');
+            const envIsLocal = document.getElementById('env-is-local');
             let isLocalEnv = true;
+            let showOnStatusBar = false;
 
             window.addEventListener('message', event => {
                 const message = event.data;
@@ -77,8 +89,11 @@
                 envCloud.value = message['cloudURL'] || '';
 
                 if (envCloud.value) {
+                    envIsLocal.checked = false;
                     toggleEnv();
                 }
+
+                envShowOnStatusBar.checked = message['showOnStatusBar'] || false;
 
                 checkBtnEnabled();
             });
@@ -92,6 +107,7 @@
                 command: isLocalEnv ? envCmd.value : undefined,
                 description: envDesc.value,
                 cloudURL: isLocalEnv ? undefined : envCloud.value,
+                showOnStatusBar: showOnStatusBar,
             });
 
             const toggleEnv = () => {
@@ -106,6 +122,10 @@
                 }
 
                 checkBtnEnabled();
+            };
+
+            const setShowOnStatusBar = (v) => {
+                showOnStatusBar = v;
             };
 
             checkBtnEnabled();

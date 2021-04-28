@@ -10,7 +10,7 @@ export class EditEnvView {
     ];
     private _panel: vscode.WebviewPanel | undefined;
     private _html: string = '';
-    private _saveHandler: ((name?: string, command?: string, description?: string, cloudURL?: string) => void) | undefined;
+    private _saveHandler: ((name?: string, command?: string, description?: string, cloudURL?: string, showOnStatusBar?: boolean) => void) | undefined;
 
     constructor() {
         this._html = ResourceService.mediaContent(EditEnvView._editEnvTemplate);
@@ -29,7 +29,7 @@ export class EditEnvView {
         this._panel.webview.html = this._html;
         this._panel.webview.onDidReceiveMessage((data : any | undefined) => {
             if (this._saveHandler) {
-                this._saveHandler(data?.name, data?.command, data?.description, data?.cloudURL);
+                this._saveHandler(data?.name, data?.command, data?.description, data?.cloudURL, data?.showOnStatusBar);
             }
 		});
 
@@ -39,6 +39,7 @@ export class EditEnvView {
                 command: env.command || '',
                 description: env.description || '',
                 cloudURL: env.cloudURL || '',
+                showOnStatusBar: env.showOnStatusBar,
             });
         }
     }

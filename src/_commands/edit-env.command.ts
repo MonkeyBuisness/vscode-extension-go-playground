@@ -24,9 +24,10 @@ export class EditEnvCommand implements CommandHandler {
             description: envNode.description,
             cloudURL: envNode.cloudURL,
             command: envNode.cmd,
+            showOnStatusBar: envNode.showOnStatusBar,
         });
 
-        editView.onSave((name?: string, command?: string, description?: string, cloudURL?: string) => {
+        editView.onSave((name?: string, command?: string, description?: string, cloudURL?: string, showOnStatusBar?: boolean) => {
             editView.close();
 
             if (!name) {
@@ -39,6 +40,7 @@ export class EditEnvCommand implements CommandHandler {
                 cloudURL: cloudURL,
                 command: command,
                 description: description,
+                showOnStatusBar: showOnStatusBar || false,
             };
 
             this._cfgService?.setConfiguration(ConfigurationService.envsCfg, envsCfg);
