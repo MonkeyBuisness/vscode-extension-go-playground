@@ -5,12 +5,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 
 import {
-    ExecCallback,
-    ExtCfg,
-    extName,
     golangLanguageId,
-    Playground,
-    stdoutKind 
 } from './types';
 
 const sandboxViewId: string = 'sandboxesView';
@@ -18,7 +13,6 @@ const toysViewId: string = 'toysView';
 const goPathEnv: string = "GOPATH";
 
 import { GoPlaygroundService } from './go-playground.service';
-import { LocalPlaygroundService } from './local-playground.service';
 import { CommandService } from './_services/command.service';
 import { PlayCommand } from './_commands/play.command';
 import { ChangeSandboxDirectoryCommand } from './_commands/change-sandbox-dir.command';
@@ -195,6 +189,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {}
+
 /*
 function initExtension(context: vscode.ExtensionContext) : ExtCfg {
     

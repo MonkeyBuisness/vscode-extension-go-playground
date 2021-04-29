@@ -73,7 +73,6 @@ export class EnvNode extends vscode.TreeItem {
 
         const icon = this.cloudURL ? 'env_cloud.svg' : 'env.svg';
         this.iconPath = ResourceService.iconPath(icon);
+        this.contextValue = this.showOnStatusBar ? 'env-item' : 'env-item-hidden';
 	}
-
-	contextValue = 'env-item';
 }

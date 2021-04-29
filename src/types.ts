@@ -237,7 +237,7 @@ export const presetEnvDefinitions: EnvDefinition[] = [
     {
         name: 'Remote Run',
         description: 'Launch GO On https://play.golang.org',
-        cloudURL: 'https://play.golang.org',
+        cloudURL: 'https://play.golang.org/compile',
         showOnStatusBar: true
     },
     {
@@ -253,6 +253,12 @@ export const presetEnvDefinitions: EnvDefinition[] = [
         showOnStatusBar: true
     },
     {
+        name: 'Format (remote)',
+        description: 'Format GO On https://play.golang.org',
+        cloudURL: 'https://play.golang.org/fmt',
+        showOnStatusBar: true
+    },
+    {
         name: 'Test (local)',
         command: 'go test -v ${{sandbox}}',
         description: 'Run GO Test Locally',
@@ -260,8 +266,7 @@ export const presetEnvDefinitions: EnvDefinition[] = [
     },
     {
         name: 'Share',
-        cloudURL: 'https://play.golang.org',
-        command: '%share%',
+        cloudURL: 'https://play.golang.org/share',
         description: 'Share GO Code',
         showOnStatusBar: true
     },

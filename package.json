@@ -192,6 +192,22 @@
 			{
 				"command": "go-playground.envs.delete",
 				"title": "Delete Environment"
+			},
+			{
+				"command": "go-playground.envs.showOnStatusBar",
+				"title": "Show Environment On Status Bar",
+				"icon": {
+					"light": "resources/icons/light/eye_off.svg",
+					"dark": "resources/icons/dark/eye_off.svg"
+				}
+			},
+			{
+				"command": "go-playground.envs.hideOnStatusBar",
+				"title": "Hide Environment On Status Bar",
+				"icon": {
+					"light": "resources/icons/light/eye_check.svg",
+					"dark": "resources/icons/dark/eye_check.svg"
+				}
 			}
 		],
 		"viewsContainers": {
@@ -295,8 +311,34 @@
 					"when": "view == envsView && viewItem == 'env-item'"
 				},
 				{
+					"command": "go-playground.envs.edit",
+					"when": "view == envsView && viewItem == 'env-item-hidden'"
+				},
+				{
 					"command": "go-playground.envs.delete",
 					"when": "view == envsView && viewItem == 'env-item'"
+				},
+				{
+					"command": "go-playground.envs.delete",
+					"when": "view == envsView && viewItem == 'env-item-hidden'"
+				},
+				{
+					"command": "go-playground.envs.showOnStatusBar",
+					"when": "view == envsView && viewItem == 'env-item-hidden'"
+				},
+				{
+					"command": "go-playground.envs.hideOnStatusBar",
+					"when": "view == envsView && viewItem == 'env-item'"
+				},
+				{
+					"command": "go-playground.envs.showOnStatusBar",
+					"when": "view == envsView && viewItem == 'env-item-hidden'",
+					"group": "inline"
+				},
+				{
+					"command": "go-playground.envs.hideOnStatusBar",
+					"when": "view == envsView && viewItem == 'env-item'",
+					"group": "inline"
 				}
 			]
 		}

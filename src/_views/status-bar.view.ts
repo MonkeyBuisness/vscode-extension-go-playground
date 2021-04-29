@@ -32,7 +32,7 @@ export class StatusBarView {
             item.command = {
                 title: 'Run On Playground',
                 command: CommandService.prepareCommand(CommandService.runCmd),
-                arguments: [env.cloudURL, env.command],
+                arguments: [env],
             };
             item.tooltip = env.description || env.cloudURL || env.name;
             item.show();
