@@ -307,6 +307,10 @@
 					"when": "view == toysView && viewItem == 'user-toy'"
 				},
 				{
+					"command": "go-playground.newToy",
+					"when": "view == toysView && viewItem == 'user-root'"
+				},
+				{
 					"command": "go-playground.envs.edit",
 					"when": "view == envsView && viewItem == 'env-item'"
 				},

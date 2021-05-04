@@ -1,5 +1,3 @@
-import * as vscode from 'vscode';
-
 export const sanboxFileExtension: string = '.go';
 export const toyFileExtension: string = '.gotoy';
 export const extName: string = 'go-playground';
@@ -18,44 +16,6 @@ export interface EnvDefinition {
     cloudURL?: string;
     showOnStatusBar: boolean;
 };
-
-export interface PlaygroundCompileResponse {
-    Errors?: string;
-    Events?: PlaygroundEvent[];
-    IsTest?: boolean;
-    Status?: number;
-    TestsFailed?: number;
-    VetOK?: boolean;
-}
-
-export interface PlaygroundEvent {
-    Delay?: number;
-    Kind?: string;
-    Message?: string;
-}
-
-export interface PlaygroundFmtResponse {
-    Body?: string;
-    Error?: string;
-}
-
-export interface ExecCallback {
-    stdout(data?: string) : void
-}
-
-export interface Playground {
-    compile(fPath: string, callback?: ExecCallback) : Promise<PlaygroundCompileResponse | void>
-    format(fPath: string) : Promise<PlaygroundFmtResponse | void>
-    share(fPath: string) : Promise<string | void>
-}
-
-export interface ExtCfg {
-    runOutChan: vscode.OutputChannel;
-    //sandboxView: SandboxView;
-    //toysView: ToyView;
-    cloudPlayground?: Playground;
-    localPlayground?: Playground;
-}
 
 export const presetToyDefinitions: ToyDefinition[] = [
     {
