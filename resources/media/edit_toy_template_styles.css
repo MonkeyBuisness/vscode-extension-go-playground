@@ -1,0 +1,11 @@
+.save-toy-button {
+	display: block;
+	border: none;
+	margin: 0;
+    width: max-content;
+	text-transform: uppercase;
+}
+
+.save-toy-button[disabled] {
+	color: var(--vscode-input-placeholderForeground);
+}

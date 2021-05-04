@@ -1,0 +1,19 @@
+.save-env-button {
+	display: block;
+	border: none;
+	margin: 0;
+    width: max-content;
+	text-transform: uppercase;
+}
+
+.save-env-button[disabled] {
+	color: var(--vscode-input-placeholderForeground);
+}
+
+label.hidden {
+	display: none;
+}
+
+label.hidden + input {
+	display: none;
+}

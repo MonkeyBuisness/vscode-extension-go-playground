@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Toy definition</title>
+
+        <style></style>
+    </head>
+
+    <body>
+        <label for="toy-name">Toy's name:</label>
+        <input
+            id="toy-name"
+            oninput="checkBtnEnabled()"
+            placeholder="Toy's name" />
+
+        <br />
+
+        <label for="toy-template">Toy's template:</label>
+        <textarea
+            id="toy-template"
+            oninput="checkBtnEnabled()"
+            placeholder="package main;&#10;&#10;import &quot;fmt&quot;&#10;&#10;func main() {&#10;&nbsp;fmt.Println(&quot;Hello world!&quot;)&#10;}"
+            rows="8"></textarea>
+
+        <br />
+
+        <button
+            disabled
+            id="save-btn"
+            onclick="saveChanges()"
+            class="save-toy-button">
+            Save Changes
+        </button>
+
+        <script>
+            const vscode = acquireVsCodeApi();
+            const saveBtn = document.getElementById('save-btn');
+            const toyName = document.getElementById('toy-name');
+            const toyTemplate = document.getElementById('toy-template');
+
+            window.addEventListener('message', event => {
+                const message = event.data;
+                toyName.value = message['name'] || '';
+                toyTemplate.value = message['template'] || '';
+
+                checkBtnEnabled();
+            });
+
+            const checkBtnEnabled = () => saveBtn.disabled = !(toyName.value && toyTemplate.value);
+
+            const saveChanges = () => vscode.postMessage({
+                name: toyName.value,
+                template: toyTemplate.value,
+            });
+
+            checkBtnEnabled();
+        </script>
+    </body>
+</html>

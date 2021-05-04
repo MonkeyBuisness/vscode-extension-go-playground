@@ -1,8 +1,3 @@
-import * as vscode from 'vscode';
-import { SandboxView } from './sandboxView';
-import { StatusBar } from './statusBar';
-import { ToyView } from './toyView';
-
 export const sanboxFileExtension: string = '.go';
 export const toyFileExtension: string = '.gotoy';
 export const extName: string = 'go-playground';
@@ -14,44 +9,13 @@ export interface ToyDefinition {
     template?: string;
 };
 
-export interface PlaygroundCompileResponse {
-    Errors?: string;
-    Events?: PlaygroundEvent[];
-    IsTest?: boolean;
-    Status?: number;
-    TestsFailed?: number;
-    VetOK?: boolean;
-}
-
-export interface PlaygroundEvent {
-    Delay?: number;
-    Kind?: string;
-    Message?: string;
-}
-
-export interface PlaygroundFmtResponse {
-    Body?: string;
-    Error?: string;
-}
-
-export interface ExecCallback {
-    stdout(data?: string) : void
-}
-
-export interface Playground {
-    compile(fPath: string, callback?: ExecCallback) : Promise<PlaygroundCompileResponse | void>
-    format(fPath: string) : Promise<PlaygroundFmtResponse | void>
-    share(fPath: string) : Promise<string | void>
-}
-
-export interface ExtCfg {
-    runOutChan: vscode.OutputChannel;
-    sandboxView: SandboxView;
-    toysView: ToyView;
-    cloudPlayground?: Playground;
-    localPlayground?: Playground;
-    statusBar?: StatusBar;
-}
+export interface EnvDefinition {
+    name: string;
+    command?: string;
+    description?: string;
+    cloudURL?: string;
+    showOnStatusBar: boolean;
+};
 
 export const presetToyDefinitions: ToyDefinition[] = [
     {
@@ -227,4 +191,43 @@ func main() {
 
 `
     }
+];
+
+export const presetEnvDefinitions: EnvDefinition[] = [
+    {
+        name: 'Remote Run',
+        description: 'Launch GO On https://play.golang.org',
+        cloudURL: 'https://play.golang.org/compile',
+        showOnStatusBar: true
+    },
+    {
+        name: 'Local Run',
+        command: 'go run ${{sandbox}}',
+        description: 'Run GO Locally',
+        showOnStatusBar: true
+    },
+    {
+        name: 'Format (local)',
+        command: 'go fmt ${{sandbox}}',
+        description: 'GO Format Locally',
+        showOnStatusBar: true
+    },
+    {
+        name: 'Format (remote)',
+        description: 'Format GO On https://play.golang.org',
+        cloudURL: 'https://play.golang.org/fmt',
+        showOnStatusBar: true
+    },
+    {
+        name: 'Test (local)',
+        command: 'go test -v ${{sandbox}}',
+        description: 'Run GO Test Locally',
+        showOnStatusBar: false
+    },
+    {
+        name: 'Share',
+        cloudURL: 'https://play.golang.org/share',
+        description: 'Share GO Code',
+        showOnStatusBar: true
+    },
 ];
