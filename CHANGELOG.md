@@ -15,5 +15,5 @@
 ## [0.2.0]
 
 - Added `Environments` view.
-- Added possibility to define `custom` toys.
+- Added possibility to create `custom` toys.
 - Fixed bugs.

@@ -4,6 +4,7 @@ import { EnvDefinition, presetEnvDefinitions } from '../types';
 import { ResourceService } from '../_services/resource.service';
 import { CommandService } from '../_services/command.service';
 import { ConfigurationService } from '../_services/configuration.service';
+import { StatusBarView } from '../_views/status-bar.view';
 
 @autoInjectable()
 export class EnvDataProvider implements vscode.TreeDataProvider<EnvNode> {
@@ -16,6 +17,7 @@ export class EnvDataProvider implements vscode.TreeDataProvider<EnvNode> {
         const envs: EnvDefinition[] = this._cfgService?.getConfiguration(ConfigurationService.envsCfg, []);
         if (!envs.length) {
             this._cfgService?.setConfiguration(ConfigurationService.envsCfg, presetEnvDefinitions);
+            StatusBarView.refresh();
         }
     }
 
