@@ -17,6 +17,13 @@ export interface EnvDefinition {
     showOnStatusBar: boolean;
 };
 
+export interface WikiDefinition {
+    name: string;
+    link?: string;
+    description?: string;
+    nodes?: WikiDefinition[];
+};
+
 export const presetToyDefinitions: ToyDefinition[] = [
     {
         name: 'Hello, playground!',
@@ -229,5 +236,18 @@ export const presetEnvDefinitions: EnvDefinition[] = [
         cloudURL: 'https://play.golang.org/share',
         description: 'Share GO Code',
         showOnStatusBar: true
+    },
+];
+
+export const presetWiki: WikiDefinition[] = [
+    {
+        name: 'golang.org',
+        nodes: [
+            {
+                name: 'Installing Go',
+                description: 'Download and install Go quickly with the steps described here',
+                link: 'https://golang.org/doc/install',
+            },
+        ],
     },
 ];

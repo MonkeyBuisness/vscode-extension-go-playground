@@ -232,6 +232,10 @@
 				{
 					"id": "sandboxesView",
 					"name": "Sandboxes"
+				},
+				{
+					"id": "wikiView",
+					"name": "Wiki"
 				}
 			]
 		},

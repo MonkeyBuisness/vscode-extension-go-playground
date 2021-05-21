@@ -31,6 +31,7 @@ import { StatusBarView } from './_views/status-bar.view';
 import { RunCommand } from './_commands/run.command';
 import { HideEnvOnStatusBarCommand } from './_commands/hide-env-on-status-bar.command';
 import { ShowEnvOnStatusBarCommand } from './_commands/show-env-on-status-bar.command';
+import { WikiView } from './_views/wiki.view';
 
 export function activate(context: vscode.ExtensionContext) {
     // register views.
@@ -49,6 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
     container.resolve(SandboxView);
     container.resolve(ToyView);
     container.resolve(EnvironmentView);
+    container.resolve(WikiView);
     StatusBarView.injectCtx(context);
     StatusBarView.refresh();
     StatusBarView.hide();
