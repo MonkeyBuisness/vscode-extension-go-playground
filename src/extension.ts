@@ -31,6 +31,8 @@ import { StatusBarView } from './_views/status-bar.view';
 import { RunCommand } from './_commands/run.command';
 import { HideEnvOnStatusBarCommand } from './_commands/hide-env-on-status-bar.command';
 import { ShowEnvOnStatusBarCommand } from './_commands/show-env-on-status-bar.command';
+import { WikiView } from './_views/wiki.view';
+import { OpenWikiURLCommand } from './_commands/open-wiki-url.command';
 
 export function activate(context: vscode.ExtensionContext) {
     // register views.
@@ -49,6 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
     container.resolve(SandboxView);
     container.resolve(ToyView);
     container.resolve(EnvironmentView);
+    container.resolve(WikiView);
     StatusBarView.injectCtx(context);
     StatusBarView.refresh();
     StatusBarView.hide();
@@ -86,6 +89,8 @@ export function activate(context: vscode.ExtensionContext) {
         context, CommandService.hideOnStatusBarEnvCmd, new HideEnvOnStatusBarCommand());
     CommandService.registerCommand(
         context, CommandService.showOnStatusBarEnvCmd, new ShowEnvOnStatusBarCommand());
+    CommandService.registerCommand(
+        context, CommandService.openWikiURLCmd, new OpenWikiURLCommand());
 
     // set global listeners.
     const statusBarVisibilityListener = (doc: vscode.TextDocument) => {

@@ -1,12 +1,17 @@
 # Go Playground [VSCode](https://code.visualstudio.com/) Extension
 
-Play with Go in your own Playground.
+### Play with Go in your own Playground.
 
+### This extension can help those who want to start learning `GO` or experiment with `golang` without creating projects or even installing the compiler locally.
+
+---
+
+## Getting started
 - [How to install](#installation)
 - [Extension Settings](#extension-settings)
   - [Commands](#commands-list)
   - [Keywords](#keywords)
-- [Releases]()
+- [Releases](#release-notes)
 
 ## Installation
 
@@ -44,6 +49,10 @@ example> go run main.go
 > **Toy** - predefined `go`-code to play with.
 
 ## Release Notes
+
+## [0.3.0]
+
+- Added `Wiki` view.
 
 ### 0.2.0
 

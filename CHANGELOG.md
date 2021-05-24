@@ -17,3 +17,7 @@
 - Added `Environments` view.
 - Added possibility to create `custom` toys.
 - Fixed bugs.
+
+## [0.3.0]
+
+- Added `Wiki` view.
