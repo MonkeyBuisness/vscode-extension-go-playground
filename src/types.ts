@@ -287,7 +287,137 @@ export const presetWiki: WikiDefinition[] = [
                         description: 'A document that gives tips for writing clear, idiomatic Go code. A must read for any new Go programmer. It augments the tour and the language specification, both of which should be read first',
                         link: 'https://golang.org/doc/effective_go',
                     },
+                    {
+                        name: 'Editor plugins and IDEs',
+                        description: 'A document that summarizes commonly used editor plugins and IDEs with Go support',
+                        link: 'https://golang.org/doc/editors',
+                    },
+                    {
+                        name: 'Diagnostics',
+                        description: 'Summarizes tools and methodologies to diagnose problems in Go programs',
+                        link: 'https://golang.org/doc/diagnostics',
+                    },
+                    {
+                        name: 'Managing dependencies',
+                        description: 'When your code uses external packages, those packages (distributed as modules) become dependencies',
+                        link: 'https://golang.org/doc/modules/managing-dependencies',
+                    },
+                    {
+                        name: 'Developing modules',
+                        nodes: [
+                            {
+                                name: 'Developing and publishing modules',
+                                description: 'You can collect related packages into modules, then publish the modules for other developers to use. This topic gives an overview of developing and publishing modules',
+                                link: 'https://golang.org/doc/modules/developing',
+                            },
+                            {
+                                name: 'Module release and versioning workflow',
+                                description: 'When you develop modules for use by other developers, you can follow a workflow that helps ensure a reliable, consistent experience for developers using the module. This topic describes the high-level steps in that workflow',
+                                link: 'https://golang.org/doc/modules/release-workflow',
+                            },
+                            {
+                                name: 'Managing module source',
+                                description: 'When you`re developing modules to publish for others to use, you can help ensure that your modules are easier for other developers to use by following the repository conventions described in this topic',
+                                link: 'https://golang.org/doc/modules/managing-source',
+                            },
+                            {
+                                name: 'Developing a major version update',
+                                description: 'A major version update can be very disruptive to your module`s users because it includes breaking changes and represents a new module. Learn more in this topic',
+                                link: 'https://golang.org/doc/modules/major-version',
+                            },
+                            {
+                                name: 'Publishing a module',
+                                description: 'When you want to make a module available for other developers, you publish it so that it`s visible to Go tools. Once you`ve published the module, developers importing its packages will be able to resolve a dependency on the module by running commands such as go get',
+                                link: 'https://golang.org/doc/modules/publishing',
+                            },
+                            {
+                                name: 'Module version numbering',
+                                description: 'A module`s developer uses each part of a module`s version number to signal the version’s stability and backward compatibility. For each new release, a module`s release version number specifically reflects the nature of the module`s changes since the preceding release',
+                                link: 'https://golang.org/doc/modules/version-numbers',
+                            },
+                            {
+                                name: 'Frequently Asked Questions (FAQ)',
+                                description: 'Answers to common questions about Go',
+                                link: 'https://golang.org/doc/faq',
+                            },
+                        ],
+                    },
                 ],
+            },
+            {
+                name: 'References',
+                nodes: [
+                    {
+                        name: 'Package Documentation',
+                        description: 'The documentation for the Go standard library',
+                        link: 'https://golang.org/pkg/',
+                    },
+                    {
+                        name: 'Command Documentation',
+                        description: 'The documentation for the Go tools',
+                        link: 'https://golang.org/doc/cmd',
+                    },
+                    {
+                        name: 'Language Specification',
+                        description: 'The official Go Language specification',
+                        link: 'https://golang.org/ref/spec',
+                    },
+                    {
+                        name: 'Go Modules Reference',
+                        description: 'A detailed reference manual for Go`s dependency management system',
+                        link: 'https://golang.org/ref/mod',
+                    },
+                    {
+                        name: 'go.mod file reference',
+                        description: 'Reference for the directives included in a go.mod file',
+                        link: 'https://golang.org/doc/modules/gomod-ref',
+                    },
+                    {
+                        name: 'The Go Memory Model',
+                        description: 'A document that specifies the conditions under which reads of a variable in one goroutine can be guaranteed to observe values produced by writes to the same variable in a different goroutine',
+                        link: 'https://golang.org/ref/mem',
+                    },
+                    {
+                        name: 'Release History',
+                        description: 'A summary of the changes between Go releases',
+                        link: 'https://golang.org/doc/devel/release.html',
+                    },
+                ]
+            },
+            {
+                name: 'From the Go Blog',
+                description: 'The official blog of the Go project, featuring news and in-depth articles by the Go team and guests',
+                link: 'https://blog.golang.org/',
+            },
+            {
+                name: 'Wiki',
+                description: 'The Go Wiki, maintained by the Go community, includes articles about the Go language, tools, and other resources',
+                link: 'https://github.com/golang/go/wiki',
+            },
+            {
+                name: 'Talks',
+                nodes: [
+                    {
+                        name: 'A Video Tour of Go',
+                        description: 'Three things that make Go fast, fun, and productive: interfaces, reflection, and concurrency. Builds a toy web crawler to demonstrate these',
+                        link: 'https://research.swtch.com/gotour',
+                    },
+                    {
+                        name: 'Code that grows with grace',
+                        description: 'One of Go`s key design goals is code adaptability; that it should be easy to take a simple design and build upon it in a clean and natural way. In this talk Andrew Gerrand describes a simple "chat roulette" server that matches pairs of incoming TCP connections, and then use Go`s concurrency mechanisms, interfaces, and standard library to extend it with a web interface and other features. While the function of the program changes dramatically, Go`s flexibility preserves the original design as it grows',
+                        link: 'https://vimeo.com/53221560',
+                    },
+                    {
+                        name: 'More',
+                        description: 'See the Go Talks site and wiki page for more Go talks',
+                        link: 'https://github.com/golang/go/wiki/GoTalks',
+                    },
+                ],
+            },
+            {
+                name: 'Non-English Documentation',
+                description: 'See the NonEnglish page at the Wiki for localized documentation',
+                link: 'https://github.com/golang/go/wiki/NonEnglish',
             },
         ],
     },

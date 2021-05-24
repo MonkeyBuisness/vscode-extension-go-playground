@@ -102,7 +102,7 @@ export class WikiNode extends vscode.TreeItem {
 
 		this.tooltip = this.desc || this.label;
         if (this.collapsibleState === vscode.TreeItemCollapsibleState.None) {
-            this.iconPath = ResourceService.iconPath('info.svg');
+            this.iconPath = ResourceService.iconPath('link.svg');
             this.contextValue += '-info';
         }
 	}
