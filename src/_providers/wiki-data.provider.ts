@@ -1,6 +1,7 @@
 import { autoInjectable } from 'tsyringe';
 import * as vscode from 'vscode';
 import { WikiDefinition } from '../types';
+import { CommandService } from '../_services/command.service';
 import { ResourceService } from '../_services/resource.service';
 
 @autoInjectable()
@@ -22,64 +23,68 @@ export class WikiDataProvider implements vscode.TreeDataProvider<WikiNode> {
 
     getChildren(element?: WikiNode): vscode.ProviderResult<WikiNode[]> {
         if (!element) {
-            const nodes: WikiNode[] = [];
+            return Promise.resolve(this._resolveWikiNodes());
+        }
 
-            for (let node of this._presetWiki) {
-                nodes.push(...this._resolveWikiNodes(node.name));
+        return Promise.resolve(this._resolveWikiNodes(element.name));
+    }
+
+    private _resolveWikiNodes(nodeName?: string) : WikiNode[] {
+        const children = this._resolveWikiChildren(nodeName);
+        if (!children) {
+            return [];
+        }
+
+        const nodes: WikiNode[] = [];
+        for (let node of children) {
+            const isFinal = node.nodes?.length;
+
+            const wikiNode = new WikiNode(
+                node.name, nodeName ? `${nodeName}/${node.name}` : node.name, node.link, node.description, 
+                isFinal ? vscode.TreeItemCollapsibleState.Collapsed
+                : vscode.TreeItemCollapsibleState.None);
+            if (isFinal) {
+                wikiNode.command = {
+                    command: CommandService.prepareCommand(CommandService.openWikiURLCmd),
+                    title: 'Open Wiki URL',
+                    arguments: [node.link],
+                };
             }
 
-            return Promise.resolve(nodes);
-        }
-
-        return Promise.resolve(/*this._resolveWikiNodes(element)*/[]);
-    }
-
-    private _resolveWikiNodes(nodeName: string) : WikiNode[] {
-        const _children = this._resolveWikiChildren(nodeName);
-
-
-
-        /*let nodes: WikiNode[] = [];
-
-        for (let wiki of this._presetWiki) {
-            nodes.push(new WikiNode(toy.name, true, toy.template, vscode.TreeItemCollapsibleState.None));
-        }
-
-        return nodes;*/
-
-        return [];
-    }
-
-    private _resolveWikiChildren(name: string) : WikiDefinition[] {
-        const children: WikiDefinition[] = [];
-
-        const wikiPath = name.split('//');
-       // for () {}
-        
-        return children;
-    }
-
-    /*private _resolveUserToyNodes() : ToyNode[] {
-        let nodes: ToyNode[] = [];
-
-        for (let i = 0; i < this._userToys.length; i++) {
-            const toy = this._userToys[i];
-            const toyNode = new ToyNode(toy.name, false, toy.template, vscode.TreeItemCollapsibleState.None);
-            toyNode.nodeId = i + 1;
-            toyNode.command = {
-                command: CommandService.prepareCommand(CommandService.editToyCmd),
-                title: 'Edit Toy',
-                arguments: [toyNode],
-            };
-            nodes.push(toyNode);
+            nodes.push(wikiNode);
         }
 
         return nodes;
     }
 
-    private _loadUserToys() : ToyDefinition[] {
-        return this._cfgService?.getConfiguration(ConfigurationService.toysCfg, []);
-    }*/
+    private _resolveWikiChildren(name?: string) : WikiDefinition[] | null {
+        let children: WikiDefinition[] = this._presetWiki;
+        if (!name) {
+            return children;
+        }
+
+        const wikiPath = name.split('/');
+        for (let p of wikiPath) {
+            const node = this._findWikiNodeByName(p, children);
+            if (!node) {
+                return null;
+            }
+
+            children = node?.nodes || [];
+        }
+        
+        return children;
+    }
+
+    private _findWikiNodeByName(nodeName: string, children: WikiDefinition[]) : WikiDefinition | null {
+        for (let node of children) {
+            if (node.name === nodeName) {
+                return node;
+            }
+        }
+
+        return null;
+    }
 }
 
 export class WikiNode extends vscode.TreeItem {
@@ -88,15 +93,17 @@ export class WikiNode extends vscode.TreeItem {
 	constructor(
         public readonly label: string,
         public readonly name: string,
-        public readonly description?: string,
+        public readonly link?: string,
+        public readonly desc?: string,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState =
             vscode.TreeItemCollapsibleState.Collapsed
 	) {
 		super(label, collapsibleState);
 
-		this.tooltip = this.description || this.label;
+		this.tooltip = this.desc || this.label;
         if (this.collapsibleState === vscode.TreeItemCollapsibleState.None) {
             this.iconPath = ResourceService.iconPath('info.svg');
+            this.contextValue += '-info';
         }
 	}
 }

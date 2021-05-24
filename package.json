@@ -17,7 +17,8 @@
 		"onCommand:go-playground.changeSanboxDir",
 		"onView:sandboxesView",
 		"onView:toysView",
-		"onView:envsView"
+		"onView:envsView",
+		"onView:wikiView"
 	],
 	"bugs": {
 		"email": "gutorov.artem@ayndex.ru",
@@ -208,6 +209,10 @@
 					"light": "resources/icons/light/eye_check.svg",
 					"dark": "resources/icons/dark/eye_check.svg"
 				}
+			},
+			{
+				"command": "go-playground.wiki.openURL",
+				"title": "Open Wiki URL"
 			}
 		],
 		"viewsContainers": {
@@ -346,6 +351,11 @@
 				{
 					"command": "go-playground.envs.hideOnStatusBar",
 					"when": "view == envsView && viewItem == 'env-item'",
+					"group": "inline"
+				},
+				{
+					"command": "go-playground.wiki.openURL",
+					"when": "view == wikiView && viewItem == 'wiki-node-info'",
 					"group": "inline"
 				}
 			]

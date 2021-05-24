@@ -242,11 +242,52 @@ export const presetEnvDefinitions: EnvDefinition[] = [
 export const presetWiki: WikiDefinition[] = [
     {
         name: 'golang.org',
+        description: 'The Go programming language is an open source project to make programmers more productive',
         nodes: [
             {
-                name: 'Installing Go',
-                description: 'Download and install Go quickly with the steps described here',
-                link: 'https://golang.org/doc/install',
+                name: 'Getting started',
+                nodes: [
+                    {
+                        name: 'Installing Go',
+                        description: 'Download and install Go quickly with the steps described here',
+                        link: 'https://golang.org/doc/install',
+                    },
+                    {
+                        name: 'Tutorial',
+                        nodes: [
+                            {
+                                name: 'Getting started',
+                                description: 'A brief Hello, World tutorial to get started. Learn a bit about Go code, tools, packages, and modules',
+                                link: 'https://golang.org/doc/tutorial/getting-started',
+                            },
+                            {
+                                name: 'Create a module',
+                                description: 'A tutorial of short topics introducing functions, error handling, arrays, maps, unit testing, and compiling',
+                                link: 'https://golang.org/doc/tutorial/create-module',
+                            },
+                        ],
+                    },
+                    {
+                        name: 'Writing Web Applications',
+                        description: 'Building a simple web application',
+                        link: 'https://golang.org/doc/articles/wiki/',
+                    },
+                    {
+                        name: 'How to write Go code',
+                        description: 'This doc explains how to develop a simple set of Go packages inside a module, and it shows how to use the go command to build and test packages',
+                        link: 'https://golang.org/doc/code',
+                    },
+                ],
+            },
+            {
+                name: 'Using and understanding Go',
+                nodes: [
+                    {
+                        name: 'Effective Go',
+                        description: 'A document that gives tips for writing clear, idiomatic Go code. A must read for any new Go programmer. It augments the tour and the language specification, both of which should be read first',
+                        link: 'https://golang.org/doc/effective_go',
+                    },
+                ],
             },
         ],
     },
