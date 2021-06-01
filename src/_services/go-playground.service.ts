@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const { URLSearchParams } = require('url');
+import AbortController from 'node-abort-controller';
 import { singleton } from 'tsyringe';
 import fetch, { RequestInit } from "node-fetch";
 
@@ -25,8 +26,10 @@ export interface PlaygroundFmtResponse {
 
 @singleton()
 export class GoPlaygroundService {
+    private static _fetchAbortController = new AbortController();
 
     async compile(body: string, url: string) : Promise<PlaygroundCompileResponse> {
+        GoPlaygroundService._fetchAbortController = new AbortController();
         const response = await fetch(url, GoPlaygroundService._pepareCompileBody(body));
         return await response.json();
     }
@@ -48,6 +51,10 @@ export class GoPlaygroundService {
         return await response.text();
     }
 
+    abort() {
+        GoPlaygroundService._fetchAbortController.abort();
+    }
+
     private static _pepareCompileBody(body?: string) : RequestInit {
         const encodedParams = new URLSearchParams();
         encodedParams.set('version', '2');
@@ -59,7 +66,8 @@ export class GoPlaygroundService {
                 'content-type': 'application/x-www-form-urlencoded'
             },
             method: 'POST',
-            body: encodedParams
+            body: encodedParams,
+            signal: GoPlaygroundService._fetchAbortController.signal,
         };
     }
 
@@ -69,14 +77,16 @@ export class GoPlaygroundService {
 
         return {
             method: 'POST',
-            body: encodedParams
+            body: encodedParams,
+            signal: GoPlaygroundService._fetchAbortController.signal,
         };
     }
 
     private static _pepareShareBody(body?: string) : RequestInit {
         return {
             method: 'POST',
-            body: body
+            body: body,
+            signal: GoPlaygroundService._fetchAbortController.signal,
         };
     }
 }

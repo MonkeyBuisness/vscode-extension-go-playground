@@ -21,3 +21,7 @@
 ## [0.3.0]
 
 - Added `Wiki` view.
+
+## [0.4.0]
+
+- Added `Cancel running` button on StatusBar to cancel current running operation.

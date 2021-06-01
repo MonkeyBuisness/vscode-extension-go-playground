@@ -33,6 +33,7 @@ import { HideEnvOnStatusBarCommand } from './_commands/hide-env-on-status-bar.co
 import { ShowEnvOnStatusBarCommand } from './_commands/show-env-on-status-bar.command';
 import { WikiView } from './_views/wiki.view';
 import { OpenWikiURLCommand } from './_commands/open-wiki-url.command';
+import { CancelRunningCommand } from './_commands/cancel_running.command';
 
 export function activate(context: vscode.ExtensionContext) {
     // register views.
@@ -91,6 +92,8 @@ export function activate(context: vscode.ExtensionContext) {
         context, CommandService.showOnStatusBarEnvCmd, new ShowEnvOnStatusBarCommand());
     CommandService.registerCommand(
         context, CommandService.openWikiURLCmd, new OpenWikiURLCommand());
+    CommandService.registerCommand(
+        context, CommandService.cancelRunningCmd, new CancelRunningCommand());
 
     // set global listeners.
     const statusBarVisibilityListener = (doc: vscode.TextDocument) => {

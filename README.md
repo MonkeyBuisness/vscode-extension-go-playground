@@ -34,6 +34,7 @@ This extension contributes the following settings:
 * `go-playground.newSandbox`: creates new [sandbox](#keywords)
 * `go-playground.newToy`: creates new [toy](#keywords)
 * `go-playground.newEnv`: creates new [environment](#keywords)
+* `go-playground.cancelRunning`: cancel running playground command
 
 ### Keywords
 
@@ -49,6 +50,10 @@ example> go run main.go
 > **Toy** - predefined `go`-code to play with.
 
 ## Release Notes
+
+## [0.4.0]
+
+- Added `Cancel running` button on StatusBar to cancel current running operation.
 
 ## [0.3.0]
 

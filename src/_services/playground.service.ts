@@ -2,12 +2,14 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { autoInjectable } from 'tsyringe';
 const { spawn } = require('child_process');
+import AbortController from 'node-abort-controller';
 import { EnvDefinition, golangLanguageId, stdoutKind } from '../types';
-import { GoPlaygroundService, PlaygroundCompileResponse, PlaygroundFmtResponse } from './go-playground.service';
+import { GoPlaygroundService, PlaygroundCompileResponse } from './go-playground.service';
 
 @autoInjectable()
 export class PlaygroundService {
     private static readonly _sandboxEnvVar = '${{sandbox}}';
+    private static _runningProc: any = null;
 
     constructor(private _goPlaygroundService?: GoPlaygroundService) {}
 
@@ -25,6 +27,15 @@ export class PlaygroundService {
         }
 
         return this._exec(filePath, env.command || '', out);
+    }
+
+    abortExecution() {
+        this._goPlaygroundService?.abort();
+        this._abort();
+    }
+
+    private _abort() : void {
+        PlaygroundService._runningProc?.kill();
     }
 
     private async _sendToCloud(body: string, url: string, out?: vscode.OutputChannel) {
@@ -60,9 +71,15 @@ export class PlaygroundService {
         
         const commands = command.split(' ');
         try {
-            const { stdout, stderr } = spawn(commands[0], commands.slice(1) || []);
+            PlaygroundService._runningProc = spawn(commands[0], commands.slice(1) || []);
+
+            const { stdout, stderr } = PlaygroundService._runningProc;
 
             for await (const data of stdout) {
+                if (PlaygroundService._runningProc.killed) {
+                    break;
+                }
+
                 if (!data) {
                     continue;
                 }
@@ -72,6 +89,10 @@ export class PlaygroundService {
             }
 
             for await (const err of stderr) {
+                if (PlaygroundService._runningProc.killed) {
+                    break;
+                }
+
                 if (!err) {
                     continue;
                 }
@@ -80,6 +101,12 @@ export class PlaygroundService {
             }
         } catch(e) {
             out?.appendLine(`Error ${e.code}: ${e.message}`);
+        } finally {
+            if (PlaygroundService._runningProc.killed) {
+                out?.appendLine('Canceled');
+            }
+
+            PlaygroundService._runningProc = null;
         }
     }
 
