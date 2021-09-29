@@ -34,6 +34,9 @@ import { ShowEnvOnStatusBarCommand } from './_commands/show-env-on-status-bar.co
 import { WikiView } from './_views/wiki.view';
 import { OpenWikiURLCommand } from './_commands/open-wiki-url.command';
 import { CancelRunningCommand } from './_commands/cancel_running.command';
+import { GoNotebook } from './_notebooks/go.notebook';
+
+let _notebook: GoNotebook;
 
 export function activate(context: vscode.ExtensionContext) {
     // register views.
@@ -111,6 +114,10 @@ export function activate(context: vscode.ExtensionContext) {
         }
         return statusBarVisibilityListener(e.document);
     });
+
+    _notebook = new GoNotebook(context);
 }
 
-export function deactivate() {}
+export function deactivate() {
+    _notebook?.dispose();
+}

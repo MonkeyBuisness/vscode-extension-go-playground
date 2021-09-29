@@ -4,7 +4,7 @@
 	"description": "Simple Go Playground environment in your VScode",
 	"version": "0.4.0",
 	"engines": {
-		"vscode": "^1.55.0"
+		"vscode": "^1.60.0"
 	},
 	"categories": [
 		"Programming Languages",
@@ -18,7 +18,9 @@
 		"onView:sandboxesView",
 		"onView:toysView",
 		"onView:envsView",
-		"onView:wikiView"
+		"onView:wikiView",
+		"onNotebookEditor:gobook",
+		"onNotebook:gobook"
 	],
 	"bugs": {
 		"email": "gutorov.artem@ayndex.ru",
@@ -113,6 +115,18 @@
 				}
 			}
 		},
+		"notebooks": [
+			{
+				"id": "gobook",
+				"type": "gobook",
+				"displayName": "Go playground book",
+				"selector": [
+					{
+						"filenamePattern": "*.gobook"
+					}
+				]
+			}
+		],
 		"commands": [
 			{
 				"command": "go-playground.play",
@@ -373,7 +387,7 @@
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.4",
 		"@types/node": "^12.11.7",
-		"@types/vscode": "^1.55.0",
+		"@types/vscode": "^1.60.0",
 		"@typescript-eslint/eslint-plugin": "^4.14.1",
 		"@typescript-eslint/parser": "^4.14.1",
 		"eslint": "^7.19.0",

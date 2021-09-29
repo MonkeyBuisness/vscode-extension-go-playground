@@ -49,11 +49,14 @@ example> go run main.go
 
 > **Toy** - predefined `go`-code to play with.
 
+> **Notebook** - consists of a sequence of cells and their outputs. The cells of a notebook can be either Markdown cells or code cells, and are rendered within the core of VS Code.
+
 ## Release Notes
 
 ## [0.4.0]
 
 - Added `Cancel running` button on StatusBar to cancel current running operation.
+- Adeed notebooks support for running go code from the `*.gobook` files.
 
 ## [0.3.0]
 
