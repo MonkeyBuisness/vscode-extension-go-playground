@@ -128,6 +128,8 @@ class GoNotebookController {
                 env, tmpFile, undefined, this._defaultExecutionHandler(execution));
 
             execution.end(success, Date.now());
+            
+            fs.unlinkSync(tmpFile);
         });
     }
 
