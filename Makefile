@@ -7,3 +7,6 @@ compile-extension:
 
 compile-renderers:
 	npm run compile-renderers
+
+publish:
+	vsce publish

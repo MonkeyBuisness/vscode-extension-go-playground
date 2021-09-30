@@ -2,7 +2,7 @@
 	"name": "go-playground",
 	"displayName": "go-playground",
 	"description": "Simple Go Playground environment in your VScode",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"engines": {
 		"vscode": "^1.60.0"
 	},
@@ -39,7 +39,8 @@
 		"golang",
 		"go playground",
 		"sandbox",
-		"playground"
+		"playground",
+		"notebook"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -386,7 +387,7 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
+		"vscode:prepublish": "npm run compile && npm run compile-renderers",
 		"compile": "tsc -p ./",
 		"compile-renderers": "webpack --mode production",
 		"watch": "tsc -watch -p ./",

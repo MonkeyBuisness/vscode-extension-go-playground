@@ -100,11 +100,15 @@ class GoNotebookController {
                 cells: vscode.NotebookCell[],
                 _notebook: vscode.NotebookDocument,
                 _controller: vscode.NotebookController) => {
+                    _controller.updateNotebookAffinity(
+                        _notebook, vscode.NotebookControllerAffinity.Preferred);
                     this._execute(cells, _controller, env);
                 };
 
             return controller;
         });
+
+
     }
 
     public dispose() {

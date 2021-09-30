@@ -53,10 +53,12 @@ example> go run main.go
 
 ## Release Notes
 
-## [0.4.0]
+## [0.4.0] [0.4.1]
 
 - Added `Cancel running` button on StatusBar to cancel current running operation.
 - Adeed notebooks support for running go code from the `*.gobook` files.
+![Example](resources/examples/gobook-example.gif)
+See example file [hello-world.gobook](resources/examples/hello-world.gobook)
 
 ## [0.3.0]
 
