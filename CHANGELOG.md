@@ -21,3 +21,12 @@
 ## [0.3.0]
 
 - Added `Wiki` view.
+
+## [0.4.0]
+
+- Added `Cancel running` button on StatusBar to cancel current running operation.
+- Adeed notebooks support for running go code from the `*.gobook` files.
+
+## [0.4.1]
+
+- Added more notebook examples.

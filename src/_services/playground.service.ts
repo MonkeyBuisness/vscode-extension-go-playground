@@ -2,36 +2,63 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { autoInjectable } from 'tsyringe';
 const { spawn } = require('child_process');
-import { EnvDefinition, golangLanguageId, stdoutKind } from '../types';
-import { GoPlaygroundService, PlaygroundCompileResponse, PlaygroundFmtResponse } from './go-playground.service';
+import { EnvDefinition, golangLanguageId, stderrKind, stdoutKind } from '../types';
+import { GoPlaygroundService, PlaygroundCompileResponse } from './go-playground.service';
+
+export interface ExecutionListener {
+    onError(err: Error) : void;
+    onResult(result: string) : void;
+    onClear() : void;
+}
 
 @autoInjectable()
 export class PlaygroundService {
     private static readonly _sandboxEnvVar = '${{sandbox}}';
+    private static _runningProc: any = null;
 
     constructor(private _goPlaygroundService?: GoPlaygroundService) {}
 
-    async execute(env: EnvDefinition, filePath: string, out?: vscode.OutputChannel) {
+    public async execute(
+        env: EnvDefinition,
+        filePath: string,
+        out?: vscode.OutputChannel,
+        listener?: ExecutionListener) : Promise<boolean> {
         if (env.cloudURL) {
             const body: string = fs.readFileSync(filePath).toString();
             
+            let success: boolean;
             try {
-                await this._sendToCloud(body, env.cloudURL, out);
+                success = await this._sendToCloud(body, env.cloudURL, out, listener);
             } catch(e) {
-                out?.appendLine(`Could not execute command: ${e}`);
-            } finally {
-                return;
+                const err = `Could not execute command: ${e}`;
+                out?.appendLine(err);
+                listener?.onError(new Error(err));
+                return false;
             }
+
+            return success;
         }
 
-        return this._exec(filePath, env.command || '', out);
+        return this._exec(filePath, env.command || '', out, listener);
     }
 
-    private async _sendToCloud(body: string, url: string, out?: vscode.OutputChannel) {
+    public abortExecution() {
+        this._goPlaygroundService?.abort();
+        this._abort();
+    }
+
+    private _abort() : void {
+        PlaygroundService._runningProc?.kill();
+    }
+
+    private async _sendToCloud(
+        body: string,
+        url: string,
+        out?: vscode.OutputChannel,
+        listener?: ExecutionListener) : Promise<boolean> {
         if (url.endsWith('/compile')) {
             const compResponse = await this._goPlaygroundService?.compile(body, url);
-            await PlaygroundService._cloudResponseCompile(compResponse, out);
-            return;
+            return await PlaygroundService._cloudResponseCompile(compResponse, out, listener);
         }
 
         if (url.endsWith('/fmt')) {
@@ -41,46 +68,76 @@ export class PlaygroundService {
             }
 
             PlaygroundService._cloudResponseFmt(fmtBodyResponse?.Body);
-            return;
+            return true;
         }
 
         if (url.endsWith('/share')) {
             const shareLink = await this._goPlaygroundService?.share(body, url);
             out?.appendLine(`Your share link is ${shareLink}`);
-            return;
+            return true;
         }
 
         const execResponse = this._goPlaygroundService?.exec(body, url);
         out?.appendLine(`Response: ${execResponse}`);
+        return true;
     }
 
-    private async _exec(filePath: string, command: string, out?: vscode.OutputChannel) {
+    private async _exec(
+        filePath: string,
+        command: string,
+        out?: vscode.OutputChannel,
+        listener?: ExecutionListener) : Promise<boolean> {
+        let success: boolean = true;
         command = command.replace(PlaygroundService._sandboxEnvVar, filePath);
         out?.appendLine(`Running: ${command}\n`);
         
         const commands = command.split(' ');
         try {
-            const { stdout, stderr } = spawn(commands[0], commands.slice(1) || []);
+            PlaygroundService._runningProc = spawn(commands[0], commands.slice(1) || []);
+
+            const { stdout, stderr } = PlaygroundService._runningProc;
 
             for await (const data of stdout) {
+                if (PlaygroundService._runningProc.killed) {
+                    break;
+                }
+
                 if (!data) {
                     continue;
                 }
 
                 const log: string = data.toString();
                 out?.append(log);
+                listener?.onResult(log);
             }
 
             for await (const err of stderr) {
+                if (PlaygroundService._runningProc.killed) {
+                    break;
+                }
+
                 if (!err) {
                     continue;
                 }
 
                 out?.append(err.toString());
+                listener?.onError(new Error(err.toString()));
+                success = false;
             }
-        } catch(e) {
-            out?.appendLine(`Error ${e.code}: ${e.message}`);
+        } catch(e: any) {
+            const err = `Error ${e.code}: ${e.message}`;
+            out?.appendLine(err);
+            listener?.onError(new Error(err));
+            success = false;
+        } finally {
+            if (PlaygroundService._runningProc.killed) {
+                out?.appendLine('Canceled');
+            }
+
+            PlaygroundService._runningProc = null;
         }
+
+        return success;
     }
 
     private static _cloudResponseFmt(response?: string) : void {
@@ -101,26 +158,30 @@ export class PlaygroundService {
         });
     }
 
-    private static async _cloudResponseCompile(cmpResp?: PlaygroundCompileResponse, out?: vscode.OutputChannel) {
-        out?.appendLine(`[Status: ${cmpResp?.Status}]`);
+    private static async _cloudResponseCompile(
+        cmpResp?: PlaygroundCompileResponse,
+        out?: vscode.OutputChannel,
+        listener?: ExecutionListener) : Promise<boolean> {
+        const status = `[Status: ${cmpResp?.Status}]`;
+        out?.appendLine(status);
+        listener?.onResult(status);
         if (cmpResp?.IsTest) {
-            out?.appendLine(`[Tests failed: ${cmpResp.TestsFailed}]`);
+            const testsResponse = `[Tests failed: ${cmpResp.TestsFailed}]`;
+            out?.appendLine(testsResponse);
+            listener?.onResult(testsResponse);
         }
 
         if (cmpResp?.Errors && cmpResp?.Errors.length) {
             out?.appendLine(cmpResp?.Errors);
-            return;
+            listener?.onError(new Error(cmpResp?.Errors));
+            return false;
         }
 
         if (!cmpResp?.Events) {
-            return;
+            return true;
         }
         
         for (let e of cmpResp?.Events) {
-            if (e.Kind !== stdoutKind) {
-                continue;
-            }
-            
             if (e.Delay) {
                 await PlaygroundService._delay(e.Delay / 1000000);
             }
@@ -132,11 +193,20 @@ export class PlaygroundService {
             // check for the clear symbol.
             if (e.Message!.charCodeAt(0) === 12) {
                 out?.clear();
+                listener?.onClear();
                 e.Message = e.Message.slice(1);
             }
             
             out?.append(e.Message!);
+
+            if (e.Kind === stdoutKind) {
+                listener?.onResult(e.Message);
+            } else if (e.Kind === stderrKind) {
+                listener?.onError(new Error(e.Message));
+            }
         }
+
+        return true;
     }
 
     private static _delay(ms: number) {

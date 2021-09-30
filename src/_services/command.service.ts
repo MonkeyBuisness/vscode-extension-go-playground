@@ -23,6 +23,7 @@ export class CommandService {
     public static readonly showOnStatusBarEnvCmd: string = 'envs.showOnStatusBar';
     public static readonly hideOnStatusBarEnvCmd: string = 'envs.hideOnStatusBar';
     public static readonly openWikiURLCmd: string = 'wiki.openURL';
+    public static readonly cancelRunningCmd: string = 'cancelRunning';
 
     public static registerCommand(context: vscode.ExtensionContext, command: string, callback: CommandHandler) : void {
         const cmd = vscode.commands.registerCommand(`${extName}.${command}`,

@@ -1,8 +1,12 @@
+import * as vscode from 'vscode';
+
 export const sanboxFileExtension: string = '.go';
 export const toyFileExtension: string = '.gotoy';
 export const extName: string = 'go-playground';
 export const golangLanguageId: string = 'go';
 export const stdoutKind: string = 'stdout';
+export const stderrKind: string = 'stderr';
+export const notebookType: string = 'gobook';
 
 export interface ToyDefinition {
     name: string;
@@ -23,6 +27,12 @@ export interface WikiDefinition {
     description?: string;
     nodes?: WikiDefinition[];
 };
+
+export interface GoRawNotebookCell {
+    language: string;
+    value: string;
+    kind: vscode.NotebookCellKind;
+}
 
 export const presetToyDefinitions: ToyDefinition[] = [
     {

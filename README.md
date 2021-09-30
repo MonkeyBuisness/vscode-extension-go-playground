@@ -34,6 +34,7 @@ This extension contributes the following settings:
 * `go-playground.newSandbox`: creates new [sandbox](#keywords)
 * `go-playground.newToy`: creates new [toy](#keywords)
 * `go-playground.newEnv`: creates new [environment](#keywords)
+* `go-playground.cancelRunning`: cancel running playground command
 
 ### Keywords
 
@@ -48,7 +49,16 @@ example> go run main.go
 
 > **Toy** - predefined `go`-code to play with.
 
+> **Notebook** - consists of a sequence of cells and their outputs. The cells of a notebook can be either Markdown cells or code cells, and are rendered within the core of VS Code.
+
 ## Release Notes
+
+## [0.4.0] [0.4.1]
+
+- Added `Cancel running` button on StatusBar to cancel current running operation.
+- Adeed notebooks support for running go code from the `*.gobook` files.
+![Example](resources/examples/gobook-example.gif)
+See example file [hello-world.gobook](resources/examples/hello-world.gobook)
 
 ## [0.3.0]
 
